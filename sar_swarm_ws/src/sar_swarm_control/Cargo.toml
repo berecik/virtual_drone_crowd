@@ -1,0 +1,19 @@
+[package]
+name = "sar_swarm_control"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rclrs = "0.3"
+raft = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
+# px4_msgs = { path = "../px4_msgs" } # Commented out for now as it's a ROS package, not a crate
+
+[lib]
+name = "sar_swarm_control"
+path = "src/lib.rs"
+
+[[bin]]
+name = "swarm_node"
+path = "src/main.rs"

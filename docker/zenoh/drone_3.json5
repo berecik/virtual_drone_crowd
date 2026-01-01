@@ -1,0 +1,11 @@
+{
+  "mode": "peer",
+  "connect": {
+    "endpoints": ["tcp/10.10.1.11:7447"]
+  },
+  "namespace": "/swarm/drone_3",
+  "allow": {
+    "publications": ["/fmu/out/vehicle_status"],
+    "subscriptions": ["/fmu/in/offboard_control_mode", "/fmu/in/trajectory_setpoint"]
+  }
+}

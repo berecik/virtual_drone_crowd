@@ -1,0 +1,107 @@
+services:
+  drone_1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sar_swarm_companion:latest
+    container_name: drone_1
+    networks:
+      swarm_net:
+        ipv4_address: 10.10.1.11
+    environment:
+      - ROS_DOMAIN_ID=1
+      - DISPLAY=${DISPLAY:-:0}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+    volumes:
+      - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
+      - ./docker/zenoh/drone_1.json5:/etc/zenoh/bridge.json5:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    # command: bash -c "zenoh-bridge-ros2dds -c /etc/zenoh/bridge.json5"
+    command: tail -f /dev/null
+
+  drone_2:
+    image: sar_swarm_companion:latest
+    container_name: drone_2
+    networks:
+      swarm_net:
+        ipv4_address: 10.10.1.12
+    environment:
+      - ROS_DOMAIN_ID=2
+      - DISPLAY=${DISPLAY:-:0}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+    volumes:
+      - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
+      - ./docker/zenoh/drone_2.json5:/etc/zenoh/bridge.json5:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    # command: bash -c "zenoh-bridge-ros2dds -c /etc/zenoh/bridge.json5"
+    command: tail -f /dev/null
+    depends_on:
+      - drone_1
+
+  drone_3:
+    image: sar_swarm_companion:latest
+    container_name: drone_3
+    networks:
+      swarm_net:
+        ipv4_address: 10.10.1.13
+    environment:
+      - ROS_DOMAIN_ID=3
+      - DISPLAY=${DISPLAY:-:0}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+    volumes:
+      - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
+      - ./docker/zenoh/drone_3.json5:/etc/zenoh/bridge.json5:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: tail -f /dev/null
+    depends_on:
+      - drone_1
+
+  drone_4:
+    image: sar_swarm_companion:latest
+    container_name: drone_4
+    networks:
+      swarm_net:
+        ipv4_address: 10.10.1.14
+    environment:
+      - ROS_DOMAIN_ID=4
+      - DISPLAY=${DISPLAY:-:0}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+    volumes:
+      - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
+      - ./docker/zenoh/drone_4.json5:/etc/zenoh/bridge.json5:ro
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: tail -f /dev/null
+    depends_on:
+      - drone_1
+
+  gcs:
+    image: sar_swarm_companion:latest
+    container_name: gcs
+    networks:
+      swarm_net:
+        ipv4_address: 10.10.1.100
+    environment:
+      - ROS_DOMAIN_ID=0
+      - DISPLAY=${DISPLAY:-:0}
+    cap_add:
+      - SYS_NICE
+      - NET_ADMIN
+    volumes:
+      - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: tail -f /dev/null
+
+networks:
+  swarm_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.1.0/24
