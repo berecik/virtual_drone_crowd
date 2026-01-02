@@ -41,6 +41,11 @@ The following tests verify the mission-critical flight logic and swarm coordinat
     - **Purpose**: Verifies inter-drone message processing logic without a live Zenoh session.
     - **Verification**: Tests valid messages, messages from self (ignored), and malformed payloads.
 - **`test_handshake_logic`**: Verifies PX4 Offboard handshake state machine.
+- **`test_lifecycle_transitions`**:
+    - **Purpose**: Verifies the `OffboardControlNode` transitions (Unconfigured -> Inactive -> Active).
+    - **Verification**: Ensures Publishers/Subscribers are created/destroyed correctly during transitions.
+- **`test_qos_profiles`**:
+    - **Purpose**: Validates that telemetry and command topics use the mandated specialized QoS profiles.
 
 ### 2. `sar_perception` (Python AI)
 The following tests verify the AI-driven human detection and 3D localization logic:

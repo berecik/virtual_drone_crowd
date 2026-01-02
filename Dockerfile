@@ -26,12 +26,12 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install ROS 2 Humble
+# Install ROS 2 Jazzy
 RUN add-apt-repository universe \
     && curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null \
     && apt-get update && apt-get install -y \
-    ros-humble-desktop-full \
+    ros-jazzy-desktop-full \
     python3-colcon-common-extensions \
     python3-rosdep \
     && rm -rf /var/lib/apt/lists/*
@@ -63,7 +63,7 @@ WORKDIR /root/sar_swarm_ws
 COPY ./sar_swarm_ws/src /root/sar_swarm_ws/src
 
 # Set ROS Domain ID and Source Workspace in Entrypoint
-RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
+RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
 RUN echo "if [ -f /root/sar_swarm_ws/install/setup.bash ]; then source /root/sar_swarm_ws/install/setup.bash; fi" >> /root/.bashrc
 
 COPY ./docker/entrypoint.sh /entrypoint.sh

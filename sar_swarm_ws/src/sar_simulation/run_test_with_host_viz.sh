@@ -6,7 +6,7 @@ SIM_DIR="$WS_ROOT/src/sar_simulation"
 CONTROL_DIR="$WS_ROOT/src/sar_swarm_control"
 
 # Source ROS 2 and workspace
-source /opt/ros/humble/setup.bash
+source /opt/ros/jazzy/setup.bash
 source $WS_ROOT/install/setup.bash
 
 # Kill any existing python processes on exit

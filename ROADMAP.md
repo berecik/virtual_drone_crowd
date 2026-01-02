@@ -13,15 +13,15 @@
 | **M5: Integrated SAR Demo** | Month 15 | [ ] | End-to-end "Search & Rescue" mission demonstration. |
 | **M6: Certification & Deployment** | Month 18 | [ ] | SORA approval and operational readiness for emergency services. |
 
-## 📍 Phase 1: Scouting Swarm (PoC) - [Current Focus] (Test Coverage: 82%)
+## 📍 Phase 1: Scouting Swarm (PoC) - [Current Focus] (Test Coverage: 85%)
 
 ### 1. Development Environment & Core Control
-- [x] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Humble and Rust (rclrs).
+- [x] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Jazzy and Rust (rclrs).
 - [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust.
     - [x] (cover by tests) Boids algorithm (Separation, Alignment, Cohesion). (Coverage: Unit tests for all three forces)
     - [x] (cover by tests) Zenoh-based inter-drone state sharing. (Coverage: Serialization and message processing)
-    - [x] XRCE-DDS Integration (Offboard control loop, heartbeat, setpoints).
-- [x] (cover by tests) **Coordinate & QoS Optimization:** Implement ENU->NED transforms and "Best Effort" QoS for Pixhawk 6C compatibility. (Coverage: Math and transform logic)
+    - [x] **XRCE-DDS Integration (Offboard control loop, heartbeat, setpoints).** (Coverage: Lifecycle state transitions and heartbeat logic)
+- [x] (cover by tests) **Coordinate & QoS Optimization:** Implement ENU->NED transforms and specialized QoS for Pixhawk 6C (BestEffort Telemetry, Reliable Commands). (Coverage: Math and transform logic, QoS configuration)
 
 ### 2. Perception & AI
 - [x] (cover by tests) **Detector Node:** Develop `sar_perception` node using Python and YOLOv8. (Coverage: Mock-based unit tests for depth logic)

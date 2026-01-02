@@ -7,9 +7,10 @@ This project aims to develop a distributed autonomous drone swarm system for Sea
 The system leverages a "Swarm Intelligence + Heavy Lift" paradigm. Small, agile drones (Scouts) perform autonomous area search and victim localization using AI, while heavy-lift platforms (Extractors) handle the physical transport of casualties.
 
 ### Key Features
-- **Decentralized Control:** Built on ROS 2 and Rust for deterministic, safety-critical swarm coordination.
+- **Decentralized Control:** Built on ROS 2 Jazzy and Rust for deterministic, safety-critical swarm coordination.
+- **Lifecycle Management:** Nodes follow `rclcpp_lifecycle` patterns to ensure safe hardware transitions (Unconfigured -> Inactive -> Active).
 - **Edge AI:** On-board human detection using NVIDIA Jetson and depth-sensing cameras (OAK-D / RealSense).
-- **Efficient Communication:** Utilizes Eclipse Zenoh for low-latency, low-bandwidth swarm networking.
+- **Efficient Communication:** Utilizes Eclipse Zenoh for low-latency, low-bandwidth swarm networking, with optimized QoS for PX4 integration.
 - **Hybrid Architecture:** Combines high-performance Rust for control loops with Python for AI and rapid prototyping.
 
 ## 🏗 Project Structure
@@ -36,7 +37,7 @@ The system leverages a "Swarm Intelligence + Heavy Lift" paradigm. Small, agile 
 
 | Component | Technology |
 | :--- | :--- |
-| **Core Framework** | ROS 2 (Humble/Jazzy) |
+| **Core Framework** | ROS 2 Jazzy Jalisco |
 | **Swarm Control** | Rust (rclrs) |
 | **Edge AI/Vision** | Python (PyTorch/YOLOv8) |
 | **Middleware** | Eclipse Zenoh |

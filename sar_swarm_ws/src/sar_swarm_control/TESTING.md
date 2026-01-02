@@ -42,9 +42,14 @@ Core mathematical and utility functions are separated into `src/utils.rs` and `s
 - **`test_handshake_logic`**:
     - **Purpose**: Verifies the internal state machine for the PX4 Offboard handshake (Heartbeat -> Mode Switch -> Arming).
     - **Verification**: Simulates 20 cycles and confirms that the mode switch and arming commands are triggered exactly at cycle 10.
+- **`test_lifecycle_transitions`**:
+    - **Purpose**: Verifies the `OffboardControlNode` transitions (Unconfigured -> Inactive -> Active).
+    - **Verification**: Ensures Publishers/Subscribers are created/destroyed correctly during transitions.
+- **`test_qos_profiles`**:
+    - **Purpose**: Validates that telemetry and command topics use the mandated specialized QoS profiles (BestEffort for telemetry, Reliable for commands).
 
 ### Running Unit Tests:
-Since the project depends on `rclrs`, a sourced ROS 2 environment (Humble) is required even for `cargo test`.
+Since the project depends on `rclrs`, a sourced ROS 2 environment (Jazzy) is required even for `cargo test`.
 ```bash
 # Inside a ROS 2 environment
 cd sar_swarm_ws/src/sar_swarm_control
@@ -53,11 +58,11 @@ cargo test
 
 ## 2. Integration Testing (Node Logic)
 
-The `OffboardControlNode` in `src/main.rs` implements a state machine for the Offboard handshake:
-1. **Heartbeat Phase:** Stream `OffboardControlMode` at 20Hz for >0.5s.
-2. **Mode Switch:** Send `VehicleCommand` to set `OFFBOARD` mode.
-3. **Arming Phase:** Send `VehicleCommand` to `ARM` the motors.
-4. **Active Control:** Stream `TrajectorySetpoint` (NED) with NaN masking.
+The `OffboardControlNode` in `src/offboard_control_node.rs` implements a state machine for the Offboard handshake:
+1. **Unconfigured -> Inactive:** Initialization and Publisher/Subscriber setup.
+2. **Inactive -> Active:** Enables the 10Hz heartbeat loop.
+3. **Active Control:** Stream `TrajectorySetpoint` (NED) and `OffboardControlMode` (Heartbeat).
+4. **Safety Verification:** Node waits for a valid GPS fix (simulated or real) before enabling offboard mode.
 
 ### Verification (Manual/SITL):
 Full integration testing should be performed using the PX4 SITL (Software-in-the-Loop) environment.
