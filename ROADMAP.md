@@ -13,7 +13,7 @@
 | **M5: Integrated SAR Demo** | Month 15 | [ ] | End-to-end "Search & Rescue" mission demonstration. |
 | **M6: Certification & Deployment** | Month 18 | [ ] | SORA approval and operational readiness for emergency services. |
 
-## 📍 Phase 1: Scouting Swarm (PoC) - [Current Focus] (Test Coverage: 77%)
+## 📍 Phase 1: Scouting Swarm (PoC) - [Current Focus] (Test Coverage: 82%)
 
 ### 1. Development Environment & Core Control
 - [x] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Humble and Rust (rclrs).

@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'detector = sar_perception.detector:main'
+            'detector = sar_perception.detector:main',
+            'search_planner = sar_perception.search_planner:main'
         ],
     },
 )

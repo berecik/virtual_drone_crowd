@@ -6,9 +6,11 @@ This document tracks the high-level testing status and provides detailed explana
 
 | Module | Unit Tests | Integration Tests | SITL / Hardware | Status |
 | :--- | :---: | :---: | :---: | :--- |
-| `sar_swarm_control` (Rust) | ✅ Pass (13) | ⏳ Pending | ⏳ Pending | Stable (Core, Comms & Search Logic Verified) |
-| `sar_perception` (Python) | ✅ Ready (3) | ⏳ Pending | ⏳ Pending | Refactored for Testability |
-| `heavy_lift_core` (Rust) | ✅ Pass (1) | ⏳ Pending | ⏳ Pending | State Machine Logic Verified |
+| `sar_swarm_control` (Rust) | ✅ Pass (13)* | ⏳ Pending | ⏳ Pending | Verified in ROS 2 env previously. |
+| `sar_perception` (Python) | ✅ Pass (8) | ⏳ Pending | ⏳ Pending | Robust Mocks for Standalone Execution |
+| `heavy_lift_core` (Rust) | ✅ Pass (1) | ⏳ Pending | ⏳ Pending | Logic Verified via Standalone Script |
+
+\* *Note: Rust tests for `sar_swarm_control` require a sourced ROS 2 environment for compilation due to `rclrs` dependency.*
 
 ## 📂 Detailed Test Catalog
 
@@ -41,9 +43,27 @@ The following tests verify the mission-critical flight logic and swarm coordinat
 - **`test_handshake_logic`**: Verifies PX4 Offboard handshake state machine.
 
 ### 2. `sar_perception` (Python AI)
-- **`test_process_detection`**:
-    - **Purpose**: Verifies depth-based detection logic.
-    - **Scenarios**: Target found (< 2.0m), No target (> 2.0m), and None input.
+The following tests verify the AI-driven human detection and 3D localization logic:
+
+#### A. Detector Logic (`test_detector.py`)
+- **`test_get_depth_at`**:
+    - **Purpose**: Verifies robust depth sampling with window averaging and NaN/zero filtering.
+- **`test_deproject`**:
+    - **Purpose**: Validates the Pinhole Camera Model math for pixel-to-3D conversion.
+- **`test_transform_and_publish_success`**:
+    - **Purpose**: Ensures detection points are correctly transformed to the `map` frame and published.
+- **`test_transform_and_publish_tf_error`**:
+    - **Purpose**: Verifies graceful handling of TF2 lookup exceptions.
+
+#### B. Search Planning (`test_search_planner.py`)
+- **`test_generate_lawnmower_path`**:
+    - **Purpose**: Validates the Boustrophedon waypoint generation logic.
+- **`test_pose_callback_advances_waypoint`**:
+    - **Purpose**: Ensures the mission advances to the next waypoint upon reaching the current target.
+- **`test_pose_callback_ignores_far_pose`**:
+    - **Purpose**: Verifies that waypoints are NOT advanced when the drone is too far.
+- **`test_publish_target_at_end`**:
+    - **Purpose**: Checks behavior when the search mission is complete.
 
 ### 3. `heavy_lift_core` (Rust Heavy Lift)
 - **`test_state_transitions`**:
