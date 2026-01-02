@@ -13,11 +13,11 @@
 | **M5: Integrated SAR Demo** | Month 15 | ⚪ Not Started | End-to-end "Search & Rescue" mission demonstration. |
 | **M6: Certification & Deployment** | Month 18 | ⚪ Not Started | SORA approval and operational readiness for emergency services. |
 
-## 📍 Current Status (Month 1-2)
-- ✅ Initial technical study and system architecture defined.
-- ✅ Dockerized ROS 2 workspace established.
-- ✅ Basic swarm control node (Rust) and simulation (Python) implemented.
-- ✅ Implementing Zenoh-based decentralized communication.
+## 📍 Current Status (Month 2-3)
+- ✅ Phase 1 (Scout Swarm) PoC Completed: Boids algorithm + Zenoh comms.
+- ✅ Phase 2 (Heavy Lift) Architectural Skeleton Initialized.
+- ✅ Dockerized multi-drone simulation environment operational.
+- 🚧 Implementing Phase 2 extraction state machines.
 
 ## 🚀 Future Milestones
 

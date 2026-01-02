@@ -6,6 +6,11 @@
 
 use rclrs;
 
+pub mod boids;
+pub mod communication;
+#[cfg(test)]
+pub mod tests;
+
 pub fn hello_swarm() {
     println!("Hello from SAR Swarm Control!");
 }

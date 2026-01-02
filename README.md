@@ -48,11 +48,10 @@ The system leverages a "Swarm Intelligence + Heavy Lift" paradigm. Small, agile 
 
 ### Prerequisites
 - Docker & Docker Compose
-- Python 3.10+ (for local simulation)
-- ROS 2 Humble (optional if using Docker)
+- Python 3.10+ (for local visualization)
 
 ### Running Simulation
-The project includes a mock simulation for testing swarm behavior without a full Gazebo setup.
+The project includes a Docker-based simulation for testing the Rust-based Boids swarm behavior.
 
 1. **Build the Docker environment:**
    ```bash
@@ -61,13 +60,24 @@ The project includes a mock simulation for testing swarm behavior without a full
 
 2. **Launch the swarm simulation:**
    ```bash
-   ./sar_simulation/run_test_with_host_viz.sh
+   docker-compose up
    ```
+   This will start 3 SITL drones and 3 swarm nodes running the Rust Boids algorithm.
 
 3. **Visualize on host:**
    ```bash
    python3 visualize_on_host.py
    ```
+   (Ensure you have the required Python dependencies installed on your host).
+
+## 🧪 Development
+
+### Running Unit Tests
+To verify the Boids logic:
+```bash
+cd sar_swarm_ws/src/sar_swarm_control
+cargo test
+```
 
 ## 📖 Documentation
 

@@ -8,11 +8,10 @@ This plan outlines the specific technical tasks required to move from the curren
 
 ### 1. Development Environment & Core Control
 - [x] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Humble and Rust (rclrs).
-- [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust.
-    - [x] Basic formation following (Leader-Follower).
-    - [x] Refactored logic for testability and unit coverage.
-    - [x] Integration with Zenoh for inter-drone pose sharing.
-    - [x] Implementation of a simple finite state machine (FSM).
+- [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust. [COMPLETED]
+    - [x] Boids algorithm (Separation, Alignment, Cohesion).
+    - [x] Zenoh-based inter-drone state sharing.
+    - [x] ROS 2 integration (MAVROS topics).
 - [ ] **MAVLink Integration:** Connect ROS 2 `TrajectorySetpoint` to PX4 via XRCE-DDS or MAVROS.
 
 ### 2. Perception & AI
@@ -25,9 +24,10 @@ This plan outlines the specific technical tasks required to move from the curren
 - [ ] **Logic Testing:** Validate autonomous "Target Found" -> "Orbit Target" sequence in simulation.
 - [ ] **Hardware-in-the-loop (HITL):** Test Jetson Orin Nano communication with Pixhawk 6C.
 
-## Phase 2: Heavy-Lift & Extraction
+## Phase 2: Heavy-Lift & Extraction [Phase 2 Implementation Started]
 
 ### 4. Heavy-Lift Platform Build
+- [x] **Architecture Skeleton:** Initialize `heavy_lift_core` with action definitions and state machine. [DONE]
 - [ ] **Hardware Procurement:** Order Gaia 160MP frame, T-Motor U13/U15 propulsion, and 12S batteries.
 - [ ] **Power System:** Design and build high-current PDB and BEC systems for Jetson AGX Orin.
 - [ ] **Rigging:** Design spreader bar for NATO stretcher and integrate electronic release hooks.

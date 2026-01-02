@@ -17,4 +17,32 @@ pub mod msg {
         pub yaw: f32,
         pub yawspeed: f32,
     }
+    #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+    pub struct PoseStamped {
+        pub pose: Pose,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+    pub struct Pose {
+        pub position: Point,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+    pub struct Point {
+        pub x: f64,
+        pub y: f64,
+        pub z: f64,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+    pub struct Twist {
+        pub linear: Vector3,
+    }
+
+    #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+    pub struct Vector3 {
+        pub x: f64,
+        pub y: f64,
+        pub z: f64,
+    }
 }

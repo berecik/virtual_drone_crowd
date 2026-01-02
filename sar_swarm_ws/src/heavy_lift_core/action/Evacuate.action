@@ -1,0 +1,15 @@
+# Goal
+# geographic_msgs/GeoPoint pickup_location
+# (mocking GeoPoint for now since it's an action file definition)
+float64 latitude
+float64 longitude
+float64 altitude
+string priority_code
+---
+# Result
+bool success
+string final_status
+---
+# Feedback
+float32 distance_to_target
+string current_state
