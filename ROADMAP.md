@@ -17,7 +17,7 @@
 - ✅ Initial technical study and system architecture defined.
 - ✅ Dockerized ROS 2 workspace established.
 - ✅ Basic swarm control node (Rust) and simulation (Python) implemented.
-- 🟡 Implementing Zenoh-based decentralized communication.
+- ✅ Implementing Zenoh-based decentralized communication.
 
 ## 🚀 Future Milestones
 

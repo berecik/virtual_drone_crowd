@@ -11,7 +11,7 @@ This plan outlines the specific technical tasks required to move from the curren
 - [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust.
     - [x] Basic formation following (Leader-Follower).
     - [x] Refactored logic for testability and unit coverage.
-    - [ ] Integration with Zenoh for inter-drone pose sharing.
+    - [x] Integration with Zenoh for inter-drone pose sharing.
     - [x] Implementation of a simple finite state machine (FSM).
 - [ ] **MAVLink Integration:** Connect ROS 2 `TrajectorySetpoint` to PX4 via XRCE-DDS or MAVROS.
 
