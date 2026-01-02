@@ -1,5 +1,11 @@
 {
   "mode": "peer",
+  "metadata": {
+    "author": "beret@hipisi.org.pl",
+    "company": "Marysia Software Limited",
+    "domain": "app.marysia.drone",
+    "website": "https://marysia.app"
+  },
   "connect": {
     "endpoints": ["tcp/10.10.1.11:7447"]
   },

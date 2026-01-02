@@ -1,14 +1,17 @@
 [package]
 name = "sar_swarm_control"
 version = "0.1.0"
+authors = ["beret <beret@hipisi.org.pl>", "Marysia Software Limited <ceo@marysia.app>"]
 edition = "2021"
+description = "Core swarm control logic for Virtual Drone Crowd (app.marysia.drone)"
+homepage = "https://marysia.app"
 
 [dependencies]
 rclrs = "0.3"
 raft = "0.7"
 serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
-# px4_msgs = { path = "../px4_msgs" } # Commented out for now as it's a ROS package, not a crate
+px4_msgs = { path = "./px4_msgs_mock" }
 
 [lib]
 name = "sar_swarm_control"

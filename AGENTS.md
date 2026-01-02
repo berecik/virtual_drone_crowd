@@ -4,6 +4,15 @@ This document provides a comprehensive technical overview and context for autono
 
 ---
 
+## 👥 Authors & Context
+
+- **Author:** beret ([beret@hipisi.org.pl](mailto:beret@hipisi.org.pl))
+- **Company:** Marysia Software Limited ([ceo@marysia.app](mailto:ceo@marysia.app))
+- **Website:** [https://marysia.app](https://marysia.app)
+- **Primary Domain:** `app.marysia.drone`
+
+---
+
 ## 🚁 Project Essence
 **Virtual Drone Crowd** is a dual-phase Search and Rescue (SAR) system:
 1.  **Phase 1 (Scout Swarm):** Agile, man-portable drones for autonomous area search and human detection.
@@ -69,6 +78,9 @@ When an agent receives the "do maintenance" command, it must follow this iterati
     -   **AGENTS.md:** Ensure this guide reflects the latest architectural changes or maintenance procedures.
     -   **ROADMAP.md:** Update milestones and current status based on completed tasks.
     -   **Project Docs:** Update `README.md`, `SYSTEM_DOCUMENTATION.md`, and `WORKING_PLAN.md` to keep them synchronized with the codebase.
+5.  **Log Maintenance:** Record the date and summary of changes in the project's history or a dedicated `MAINTENANCE.log`.
+
+*Last Maintenance: 2026-01-02 - Refactored `sar_swarm_control` for better testability, added unit tests to `lib.rs`, and synchronized documentation.*
 
 ### 2. Simulation First
 Always validate logic in simulation.

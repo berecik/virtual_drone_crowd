@@ -1,6 +1,12 @@
 # Base Image
 FROM nvidia/cuda:12.2.0-runtime-ubuntu22.04
 
+LABEL maintainer="beret@hipisi.org.pl"
+LABEL company="Marysia Software Limited"
+LABEL website="https://marysia.app"
+LABEL project="Virtual Drone Crowd"
+LABEL domain="app.marysia.drone"
+
 # Set non-interactive mode for apt
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,6 +19,11 @@ RUN apt-get update && apt-get install -y \
     software-properties-common \
     git \
     wget \
+    clang \
+    libclang-dev \
+    libclang-14-dev \
+    cmake \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 # Install ROS 2 Humble
@@ -34,7 +45,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 
 # Install colcon-cargo and colcon-ros-cargo
 RUN apt-get update && apt-get install -y python3-pip \
-    && pip3 install colcon-cargo colcon-ros-cargo \
+    && pip3 install colcon-cargo colcon-ros-cargo pytest \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PX4 Dependencies (for Micro-XRCE-DDS Agent)

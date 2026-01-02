@@ -1,15 +1,18 @@
 # Working Plan: Virtual Drone Crowd
 
+**Contact:** beret@hipisi.org.pl | Marysia Software Limited (https://marysia.app)
+
 This plan outlines the specific technical tasks required to move from the current codebase to a fully functional SAR swarm.
 
 ## Phase 1: Scouting Swarm (PoC)
 
 ### 1. Development Environment & Core Control
-- [ ] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Humble and Rust (rclrs).
-- [ ] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust.
-    - [ ] Basic formation following (Leader-Follower).
+- [x] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Humble and Rust (rclrs).
+- [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust.
+    - [x] Basic formation following (Leader-Follower).
+    - [x] Refactored logic for testability and unit coverage.
     - [ ] Integration with Zenoh for inter-drone pose sharing.
-    - [ ] Implementation of a simple finite state machine (FSM).
+    - [x] Implementation of a simple finite state machine (FSM).
 - [ ] **MAVLink Integration:** Connect ROS 2 `TrajectorySetpoint` to PX4 via XRCE-DDS or MAVROS.
 
 ### 2. Perception & AI

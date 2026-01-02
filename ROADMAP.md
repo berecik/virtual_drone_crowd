@@ -1,10 +1,12 @@
 # Project Roadmap: Virtual Drone Crowd
 
+**Maintained by:** beret@hipisi.org.pl & Marysia Software Limited (https://marysia.app)
+
 ## 🗓 Timeline Overview
 
 | Milestone | Target Date | Status | Description |
 | :--- | :--- | :--- | :--- |
-| **M1: Swarm Foundation** | Month 3 | 🟡 In Progress | Basic swarm formation and Zenoh comms in simulation. |
+| **M1: Swarm Foundation** | Month 3 | ✅ Completed | Basic swarm formation and Zenoh comms in simulation. |
 | **M2: Perception PoC** | Month 6 | ⚪ Not Started | Autonomous human detection and 3D localization. |
 | **M3: Scout Hardware Ready** | Month 8 | ⚪ Not Started | Flight tests of 4x X500 drones with Jetson Orin Nano. |
 | **M4: Heavy Lift Prototype** | Month 12 | ⚪ Not Started | First lift of 80kg dummy load using Octocopter. |

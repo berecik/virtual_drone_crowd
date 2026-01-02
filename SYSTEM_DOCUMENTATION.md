@@ -1,5 +1,8 @@
 # System Documentation: Virtual Drone Crowd
 
+**Authors:** beret@hipisi.org.pl & Marysia Software Limited (ceo@marysia.app, https://marysia.app)  
+**Domain:** app.marysia.drone
+
 ## 1. System Architecture
 
 The system is designed as a decentralized swarm of autonomous agents. It follows a multi-layered architecture to ensure safety, performance, and flexibility.

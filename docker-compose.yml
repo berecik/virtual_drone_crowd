@@ -1,5 +1,10 @@
 services:
   drone_1:
+    labels:
+      author: "beret@hipisi.org.pl"
+      company: "Marysia Software Limited"
+      website: "https://marysia.app"
+      domain: "app.marysia.drone"
     build:
       context: .
       dockerfile: Dockerfile
@@ -22,6 +27,11 @@ services:
     command: tail -f /dev/null
 
   drone_2:
+    labels:
+      author: "beret@hipisi.org.pl"
+      company: "Marysia Software Limited"
+      website: "https://marysia.app"
+      domain: "app.marysia.drone"
     image: sar_swarm_companion:latest
     container_name: drone_2
     networks:
@@ -43,6 +53,11 @@ services:
       - drone_1
 
   drone_3:
+    labels:
+      author: "beret@hipisi.org.pl"
+      company: "Marysia Software Limited"
+      website: "https://marysia.app"
+      domain: "app.marysia.drone"
     image: sar_swarm_companion:latest
     container_name: drone_3
     networks:
@@ -63,6 +78,11 @@ services:
       - drone_1
 
   drone_4:
+    labels:
+      author: "beret@hipisi.org.pl"
+      company: "Marysia Software Limited"
+      website: "https://marysia.app"
+      domain: "app.marysia.drone"
     image: sar_swarm_companion:latest
     container_name: drone_4
     networks:
@@ -83,6 +103,11 @@ services:
       - drone_1
 
   gcs:
+    labels:
+      author: "beret@hipisi.org.pl"
+      company: "Marysia Software Limited"
+      website: "https://marysia.app"
+      domain: "app.marysia.drone"
     image: sar_swarm_companion:latest
     container_name: gcs
     networks:

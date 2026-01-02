@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+"""
+Virtual Drone Crowd - Mock Drone Simulator
+Author: beret <beret@hipisi.org.pl>
+Company: Marysia Software Limited <ceo@marysia.app>
+Domain: app.marysia.drone
+Website: https://marysia.app
+"""
+
 import rclpy
 from rclpy.node import Node
 from px4_msgs.msg import VehicleOdometry, TrajectorySetpoint

@@ -77,5 +77,13 @@ For detailed information, please refer to:
 - [Roadmap](ROADMAP.md)
 - [Original Technical Study (Polish)](docs/Projekt%20Dronów%20SAR_%20Ewakuacja%20Człowieka.md)
 
+## 👥 Authors & Contact
+
+- **beret** - [beret@hipisi.org.pl](mailto:beret@hipisi.org.pl)
+- **Marysia Software Limited** - [ceo@marysia.app](mailto:ceo@marysia.app)
+- **Website:** [https://marysia.app](https://marysia.app)
+
+---
+
 ## ⚖️ Legal & Safety
 Operations involving heavy-lift swarms and human transport are subject to EASA Specific/Certified category regulations and require SORA (Specific Operations Risk Assessment). See [System Documentation](SYSTEM_DOCUMENTATION.md#regulatory-compliance) for details.

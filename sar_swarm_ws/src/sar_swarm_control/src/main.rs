@@ -1,4 +1,11 @@
+/// Virtual Drone Crowd - Swarm Control Node
+/// Author: beret <beret@hipisi.org.pl>
+/// Company: Marysia Software Limited <ceo@marysia.app>
+/// Domain: app.marysia.drone
+/// Website: https://marysia.app
+
 use rclrs;
+use sar_swarm_control::calculate_target_pos;
 use std::env;
 use std::sync::{Arc, Mutex};
 use px4_msgs::msg::VehicleOdometry;
@@ -20,7 +27,7 @@ fn main() -> Result<(), rclrs::RclrsError> {
     let target_id: Option<u32> = args.get(2).and_then(|s| s.parse().ok());
 
     let node_name = format!("drone_control_{}", drone_id);
-    let node = rclrs::create_node(&context, &node_name)?;
+    let mut node = rclrs::Node::new(&context, &node_name)?;
 
     let state = Arc::new(Mutex::new(DroneControl {
         id: drone_id,
@@ -80,15 +87,11 @@ fn main() -> Result<(), rclrs::RclrsError> {
     )?;
 
     let state_timer_cb = Arc::clone(&state);
-    let _timer = node.create_timer(std::time::Duration::from_millis(100), move || {
+    let _timer = node.create_wall_timer(std::time::Duration::from_millis(100), move || {
         let s = state_timer_cb.lock().unwrap();
         let mut setpoint = TrajectorySetpoint::default();
 
-        let target_x = s.leader_pos[0] + s.offset[0];
-        let target_y = s.leader_pos[1] + s.offset[1];
-        let target_z = s.leader_pos[2] + s.offset[2];
-
-        setpoint.position = [target_x, target_y, target_z];
+        setpoint.position = calculate_target_pos(s.leader_pos, s.offset);
         setpoint.velocity = [f32::NAN, f32::NAN, f32::NAN];
         setpoint.acceleration = [f32::NAN, f32::NAN, f32::NAN];
         setpoint.jerk = [f32::NAN, f32::NAN, f32::NAN];
