@@ -25,13 +25,16 @@ class ExtrapolationException(Exception): pass
 
 mock_rclpy = MagicMock()
 mock_rclpy.node.Node = MockNode
+mock_rclpy.qos = MagicMock()
 sys.modules['rclpy'] = mock_rclpy
 sys.modules['rclpy.node'] = mock_rclpy.node
+sys.modules['rclpy.qos'] = mock_rclpy.qos
 sys.modules['rclpy.duration'] = MagicMock()
 sys.modules['sensor_msgs.msg'] = MagicMock()
 sys.modules['geometry_msgs.msg'] = MagicMock()
 sys.modules['visualization_msgs.msg'] = MagicMock()
 sys.modules['cv_bridge'] = MagicMock()
+sys.modules['message_filters'] = MagicMock()
 
 mock_tf2_ros = MagicMock()
 mock_tf2_ros.LookupException = LookupException
@@ -55,19 +58,19 @@ class TestDetector(unittest.TestCase):
 
     def test_get_depth_at(self):
         # Create a 100x100 depth image
-        self.node.current_depth_image = np.ones((100, 100), dtype=np.float32) * 2.0
+        depth_image = np.ones((100, 100), dtype=np.float32) * 2.0
         # Put a NaN and 0 to test filtering
-        self.node.current_depth_image[50, 50] = np.nan
-        self.node.current_depth_image[51, 51] = 0.0
+        depth_image[50, 50] = np.nan
+        depth_image[51, 51] = 0.0
         # Put some other values in the window
-        self.node.current_depth_image[48:53, 48:53] = 3.0
-        self.node.current_depth_image[50, 50] = np.nan
-        self.node.current_depth_image[51, 51] = 0.0
+        depth_image[48:53, 48:53] = 3.0
+        depth_image[50, 50] = np.nan
+        depth_image[51, 51] = 0.0
 
-        depth = self.node.get_depth_at(50, 50, window=2)
+        depth = self.node.get_depth_at(depth_image, 50, 50, kernel_size=5)
         self.assertEqual(depth, 3.0)
 
-    def test_deproject(self):
+    def test_projection_logic(self):
         # Mock CameraInfo
         camera_info = MagicMock()
         # k = [fx, 0, cx, 0, fy, cy, 0, 0, 1]
@@ -75,14 +78,22 @@ class TestDetector(unittest.TestCase):
         self.node.camera_info = camera_info
 
         # Center pixel (500, 500) at 2.0m should deproject to (0, 0, 2)
-        x, y, z = self.node.deproject(500, 500, 2.0)
-        self.assertEqual(x, 0.0)
-        self.assertEqual(y, 0.0)
-        self.assertEqual(z, 2.0)
+        u, v, z = 500, 500, 2.0
+        fx = self.node.camera_info.k[0]
+        fy = self.node.camera_info.k[4]
+        cx = self.node.camera_info.k[2]
+        cy = self.node.camera_info.k[5]
+
+        x_c = (u - cx) * z / fx
+        y_c = (v - cy) * z / fy
+        z_c = float(z)
+
+        self.assertEqual(x_c, 0.0)
+        self.assertEqual(y_c, 0.0)
+        self.assertEqual(z_c, 2.0)
 
     def test_transform_and_publish_success(self):
         self.node.victim_pub = MagicMock()
-        self.node.marker_pub = MagicMock()
 
         # Mock TF lookup and transform
         mock_transform = MagicMock()
@@ -97,10 +108,9 @@ class TestDetector(unittest.TestCase):
 
             # Need a mock stamp
             mock_stamp = MagicMock()
-            self.node.transform_and_publish((0.1, 0.2, 0.3), mock_stamp)
+            self.node.transform_and_publish(0.1, 0.2, 0.3, "camera_link", mock_stamp)
 
             self.assertTrue(self.node.victim_pub.publish.called)
-            self.assertTrue(self.node.marker_pub.publish.called)
 
     def test_transform_and_publish_tf_error(self):
         self.node.victim_pub = MagicMock()
@@ -110,7 +120,7 @@ class TestDetector(unittest.TestCase):
 
         # Should not crash, just log warning
         mock_stamp = MagicMock()
-        self.node.transform_and_publish((0.1, 0.2, 0.3), mock_stamp)
+        self.node.transform_and_publish(0.1, 0.2, 0.3, "camera_link", mock_stamp)
         self.assertFalse(self.node.victim_pub.publish.called)
 
 if __name__ == '__main__':

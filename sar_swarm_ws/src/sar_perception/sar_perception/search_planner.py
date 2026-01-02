@@ -12,11 +12,13 @@ class SearchPlannerNode(Node):
         self.declare_parameter('area_width', 20.0)
         self.declare_parameter('sweep_width', 4.0)
         self.declare_parameter('altitude', 5.0)
+        self.declare_parameter('dist_threshold', 1.0)
 
         self.area_length = self.get_parameter('area_length').value
         self.area_width = self.get_parameter('area_width').value
         self.sweep_width = self.get_parameter('sweep_width').value
         self.altitude = self.get_parameter('altitude').value
+        self.dist_threshold = self.get_parameter('dist_threshold').value
 
         # Publishers
         self.target_pub = self.create_publisher(
@@ -70,8 +72,8 @@ class SearchPlannerNode(Node):
             (current_pos.z - target_wp.z)**2
         )
 
-        if dist < 1.0:
-            self.get_logger().info(f"Reached waypoint {self.current_wp_idx}. Switching to next.")
+        if dist < self.dist_threshold:
+            self.get_logger().info(f"Reached waypoint {self.current_wp_idx} (dist: {dist:.2f}m). Switching to next.")
             self.current_wp_idx += 1
             self.publish_target()
 

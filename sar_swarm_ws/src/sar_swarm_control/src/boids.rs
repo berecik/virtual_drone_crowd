@@ -9,7 +9,28 @@ pub struct Boid {
     pub timestamp: u64, // microseconds
 }
 
-pub fn calculate_flocking_vector(me: &Boid, neighbors: &[Boid]) -> Vector3<f64> {
+#[derive(Clone, Debug)]
+pub struct FlockingParams {
+    pub neighbor_radius: f64,
+    pub separation_radius: f64,
+    pub separation_weight: f64,
+    pub alignment_weight: f64,
+    pub cohesion_weight: f64,
+}
+
+impl Default for FlockingParams {
+    fn default() -> Self {
+        Self {
+            neighbor_radius: 10.0,
+            separation_radius: 2.0,
+            separation_weight: 2.0,
+            alignment_weight: 1.0,
+            cohesion_weight: 1.0,
+        }
+    }
+}
+
+pub fn calculate_flocking_vector(me: &Boid, neighbors: &[Boid], params: &FlockingParams) -> Vector3<f64> {
     let mut separation = Vector3::new(0.0, 0.0, 0.0);
     let mut alignment = Vector3::new(0.0, 0.0, 0.0);
     let mut cohesion = Vector3::new(0.0, 0.0, 0.0);
@@ -21,18 +42,15 @@ pub fn calculate_flocking_vector(me: &Boid, neighbors: &[Boid]) -> Vector3<f64> 
     let mut neighbors_count = 0;
     let mut center_of_mass = Vector3::new(0.0, 0.0, 0.0);
 
-    let neighbor_radius = 5.0; // meters
-    let separation_radius = 1.0; // meters
-
     for other in neighbors {
         let diff = me.position - other.position;
         let dist = diff.norm();
 
-        if dist < neighbor_radius && dist > 0.0 {
+        if dist < params.neighbor_radius && dist > 0.0 {
             neighbors_count += 1;
 
             // Separation: move away from neighbors that are too close
-            if dist < separation_radius {
+            if dist < params.separation_radius {
                 separation += diff.normalize() / dist;
             }
 
@@ -50,10 +68,5 @@ pub fn calculate_flocking_vector(me: &Boid, neighbors: &[Boid]) -> Vector3<f64> 
         cohesion = center_of_mass - me.position;
     }
 
-    // Weights
-    let separation_weight = 2.0;
-    let alignment_weight = 1.0;
-    let cohesion_weight = 1.0;
-
-    separation * separation_weight + (alignment - me.velocity) * alignment_weight + cohesion * cohesion_weight
+    separation * params.separation_weight + (alignment - me.velocity) * params.alignment_weight + cohesion * params.cohesion_weight
 }

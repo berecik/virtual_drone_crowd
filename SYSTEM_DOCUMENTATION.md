@@ -33,13 +33,17 @@ The system utilizes a hybrid communication model:
 
 ### 3.1 `sar_swarm_control` (Rust)
 The core "brain" of each drone.
+- **Offboard Lifecycle Node:** Implements a manual lifecycle state machine (`on_configure`, `on_activate`, etc.) for robust startup and failover.
 - **State Machine:** Manages mission phases (Idle, Search, Follow, Extract).
-- **Admittance Controller:** (Planned for Phase 2) Adjusts drone position based on tether tension.
-- **Safety Monitor:** Heartbeat checking and autonomous RTL (Return to Launch) on link loss.
+- **Flocking Engine:** Implements Boids algorithms (Separation, Alignment, Cohesion) for autonomous formation maintenance.
+- **Safety Monitor:** 20Hz heartbeat loop ensuring continuous Offboard control mode publication to PX4.
+- **Coordinate Transformation:** Native ENU to NED conversion for PX4-compatible trajectory setpoints.
 
 ### 3.2 `sar_perception` (Python)
-- **Object Detection:** Identifies human signatures in RGB and Thermal streams.
-- **Coordinate Transformation:** Projects 2D detections into 3D world coordinates using depth maps and drone odometry.
+- **Object Detection:** Identifies human signatures (class "person") using YOLOv8.
+- **Depth Fusion:** Synchronizes RGB and Depth frames to extract 3D coordinates from 2D bounding boxes.
+- **Search Planning:** Generates Boustrophedon (lawnmower) paths for area coverage with configurable overlap and altitude.
+- **Coordinate Transformation:** Projects 2D detections into 3D world coordinates using pinhole camera model and TF2 transformations to the `map` frame.
 
 ### 3.3 `sar_simulation`
 - **Mock Sim:** Lightweight UDP-based simulation for logic testing.

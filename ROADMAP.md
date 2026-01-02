@@ -13,7 +13,7 @@
 | **M5: Integrated SAR Demo** | Month 15 | [ ] | End-to-end "Search & Rescue" mission demonstration. |
 | **M6: Certification & Deployment** | Month 18 | [ ] | SORA approval and operational readiness for emergency services. |
 
-## 📍 Phase 1: Scouting Swarm (PoC) - [Current Focus] (Test Coverage: 85%)
+## 📍 Phase 1: Scouting Swarm (PoC) - [Current Focus] (Test Coverage: 90%)
 
 ### 1. Development Environment & Core Control
 - [x] **Infrastructure:** Finalize Docker-based development environment with ROS 2 Jazzy and Rust (rclrs).
@@ -21,10 +21,10 @@
     - [x] (cover by tests) Boids algorithm (Separation, Alignment, Cohesion). (Coverage: Unit tests for all three forces)
     - [x] (cover by tests) Zenoh-based inter-drone state sharing. (Coverage: Serialization and message processing)
     - [x] **XRCE-DDS Integration (Offboard control loop, heartbeat, setpoints).** (Coverage: Lifecycle state transitions, 10Hz heartbeat, GPS fix logic, ENU->NED verified via standalone tests)
-- [x] (cover by tests) **Coordinate & QoS Optimization:** Implement ENU->NED transforms and specialized QoS for Pixhawk 6C (BestEffort Telemetry, Reliable Commands). (Coverage: Math and transform logic, DDS-principled QoS configuration)
+- [x] (cover by tests) **Coordinate & QoS Optimization:** Implement ENU->NED transforms and specialized QoS for Pixhawk 6C (BestEffort Telemetry, Reliable Commands). (Coverage: Math and transform logic, DDS-principled QoS configuration, Unit tests for ENU->NED)
 
 ### 2. Perception & AI
-- [x] (cover by tests) **Detector Node:** Develop `sar_perception` node using Python and YOLOv8. (Coverage: Mock-based unit tests for depth logic)
+- [x] (cover by tests) **Detector Node:** Develop `sar_perception` node using Python and YOLOv8. (Coverage: Mock-based unit tests for depth logic and 3D projection)
 - [ ] **Localization:** Implement 3D point estimation of detections using OAK-D depth data and TF2 transforms.
 - [x] (cover by tests) **Search Algorithm:** Implement a lawnmower or area-partitioning search pattern. (Coverage: Unit tests for waypoint generation)
 

@@ -81,7 +81,7 @@ mod tests {
                 timestamp: 0,
             });
         }
-        let force = calculate_flocking_vector(&me, &neighbors);
+        let force = calculate_flocking_vector(&me, &neighbors, &FlockingParams::default());
         assert_eq!(force, Vector3::new(3.0, 0.0, 0.0));
     }
 
@@ -93,7 +93,7 @@ mod tests {
             velocity: Vector3::new(0.0, 0.0, 0.0),
             timestamp: 0,
         };
-        let force = calculate_flocking_vector(&me, &[]);
+        let force = calculate_flocking_vector(&me, &[], &FlockingParams::default());
         assert_eq!(force, Vector3::new(0.0, 0.0, 0.0));
     }
 
@@ -112,7 +112,7 @@ mod tests {
             timestamp: 0,
         };
 
-        let force = calculate_flocking_vector(&boid1, &[boid2.clone()]);
+        let force = calculate_flocking_vector(&boid1, &[boid2.clone()], &FlockingParams::default());
 
         // Force should be pointing away from boid2, so in negative x direction
         assert!(force.x < 0.0, "Force.x should be negative, got {}", force.x);
@@ -130,18 +130,18 @@ mod tests {
         };
         let boid2 = Boid {
             drone_id: "drone_2".to_string(),
-            position: Vector3::new(2.0, 0.0, 0.0), // Within neighbor radius (5.0) but outside separation (1.0)
+            position: Vector3::new(3.0, 0.0, 0.0), // Within neighbor radius (10.0) but outside separation (2.0)
             velocity: Vector3::new(1.0, 1.0, 0.0),
             timestamp: 0,
         };
 
-        let force = calculate_flocking_vector(&boid1, &[boid2]);
+        let force = calculate_flocking_vector(&boid1, &[boid2], &FlockingParams::default());
 
         // Alignment force: (avg_velocity - my_velocity) * weight
         // ( [1, 1, 0] - [0, 0, 0] ) * 1.0 = [1, 1, 0]
         // Cohesion force: (avg_position - my_position) * weight
-        // ( [2, 0, 0] - [0, 0, 0] ) * 1.0 = [2, 0, 0]
-        // Total: [3, 1, 0]
+        // ( [3, 0, 0] - [0, 0, 0] ) * 1.0 = [3, 0, 0]
+        // Total: [4, 1, 0]
         assert!(force.x > 0.0);
         assert!(force.y > 0.0);
         assert_eq!(force.z, 0.0);
@@ -157,23 +157,23 @@ mod tests {
         };
         let boid2 = Boid {
             drone_id: "drone_2".to_string(),
-            position: Vector3::new(3.0, 4.0, 0.0), // distance = 5.0
+            position: Vector3::new(6.0, 8.0, 0.0), // distance = 10.0
             velocity: Vector3::new(0.0, 0.0, 0.0),
             timestamp: 0,
         };
 
-        // At exactly 5.0 distance, it might be excluded if logic is dist < neighbor_radius
-        // In boids.rs: if dist < neighbor_radius && dist > 0.0
-        let force = calculate_flocking_vector(&boid1, &[boid2.clone()]);
-        assert_eq!(force, Vector3::new(0.0, 0.0, 0.0), "Should be zero as distance is not < 5.0");
+        // At exactly 10.0 distance, it might be excluded if logic is dist < neighbor_radius
+        // In boids.rs: if dist < params.neighbor_radius && dist > 0.0
+        let force = calculate_flocking_vector(&boid1, &[boid2.clone()], &FlockingParams::default());
+        assert_eq!(force, Vector3::new(0.0, 0.0, 0.0), "Should be zero as distance is not < 10.0");
 
         let boid3 = Boid {
             drone_id: "drone_3".to_string(),
-            position: Vector3::new(2.0, 2.0, 0.0), // distance < 5.0
+            position: Vector3::new(2.0, 2.0, 0.0), // distance < 10.0
             velocity: Vector3::new(0.0, 0.0, 0.0),
             timestamp: 0,
         };
-        let force2 = calculate_flocking_vector(&boid1, &[boid3]);
+        let force2 = calculate_flocking_vector(&boid1, &[boid3], &FlockingParams::default());
         // Cohesion: [2, 2, 0] * 1.0 = [2, 2, 0]
         assert!(force2.x > 0.0);
         assert!(force2.y > 0.0);
