@@ -46,8 +46,35 @@ pub mod msg {
         pub confirmation: u8,
         pub from_external: bool,
     }
+
+    #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+    pub struct VehicleGlobalPosition {
+        pub timestamp: u64,
+        pub lat: f64,
+        pub lon: f64,
+        pub alt: f32,
+        pub eph: f32,
+        pub epv: f32,
+    }
+
     pub const VEHICLE_CMD_DO_SET_MODE: u32 = 176;
     pub const VEHICLE_CMD_COMPONENT_ARM_DISARM: u32 = 400;
+
+    pub mod srv {
+        use serde::{Deserialize, Serialize};
+        use super::VehicleCommand;
+
+        #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+        pub struct VehicleCommand_Request {
+            pub request: VehicleCommand,
+        }
+
+        #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+        pub struct VehicleCommand_Response {
+            pub success: bool,
+            pub result: u8,
+        }
+    }
     #[derive(Serialize, Deserialize, Debug, Default, Clone)]
     pub struct PoseStamped {
         pub pose: Pose,

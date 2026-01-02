@@ -10,6 +10,7 @@ pub mod boids;
 pub mod communication;
 pub mod utils;
 pub mod search;
+pub mod offboard_control_node;
 #[path = "main.rs"]
 pub mod main_module;
 #[cfg(test)]
