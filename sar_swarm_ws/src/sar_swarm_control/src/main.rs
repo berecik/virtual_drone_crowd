@@ -11,41 +11,21 @@ use rclrs::{self, QOS_PROFILE_DEFAULT};
 use px4_msgs::msg::{OffboardControlMode, TrajectorySetpoint, VehicleCommand};
 use std::env;
 use std::sync::{Arc, Mutex};
-use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use std::time::Duration;
 use nalgebra::Vector3;
 
-/// --- COORDINATE TRANSFORMATION (ENU -> NED) ---
-/// ROS 2 standard: ENU (East-North-Up)
-/// PX4 standard: NED (North-East-Down)
-///
-/// Transformation Logic:
-/// X_ned = Y_enu (North)
-/// Y_ned = X_enu (East)
-/// Z_ned = -Z_enu (Down)
-///
-/// This is critical because if we send a positive Z in ROS (Up),
-/// without conversion, PX4 would interpret it as Down (plunging into the ground).
-fn enu_to_ned(x: f32, y: f32, z: f32) -> [f32; 3] {
-    [y, x, -z]
-}
+mod utils;
+use utils::{enu_to_ned, get_clock_microseconds};
 
-/// Helper to get current timestamp in microseconds, required by PX4 uORB topics.
-fn get_clock_microseconds() -> u64 {
-    SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap_or(Duration::from_secs(0))
-        .as_micros() as u64
-}
-
-struct OffboardControlNode {
-    offboard_control_mode_publisher: Arc<rclrs::Publisher<OffboardControlMode>>,
-    trajectory_setpoint_publisher: Arc<rclrs::Publisher<TrajectorySetpoint>>,
-    vehicle_command_publisher: Arc<rclrs::Publisher<VehicleCommand>>,
-    offboard_setpoint_counter: u64,
+pub struct OffboardControlNode {
+    pub offboard_control_mode_publisher: Arc<rclrs::Publisher<OffboardControlMode>>,
+    pub trajectory_setpoint_publisher: Arc<rclrs::Publisher<TrajectorySetpoint>>,
+    pub vehicle_command_publisher: Arc<rclrs::Publisher<VehicleCommand>>,
+    pub offboard_setpoint_counter: u64,
 }
 
 impl OffboardControlNode {
-    fn new(node: &mut rclrs::Node) -> Result<Self, rclrs::RclrsError> {
+    pub fn new(node: &mut rclrs::Node) -> Result<Self, rclrs::RclrsError> {
         // --- QUALITY OF SERVICE (QoS) CONFIGURATION ---
         // PX4's uXRCE-DDS bridge uses "Best Effort" for high-frequency topics.
         // A "Reliable" (default) ROS 2 subscriber/publisher will NOT communicate with
@@ -95,7 +75,7 @@ impl OffboardControlNode {
 
     /// Publish the OffboardControlMode heartbeat.
     /// This tells PX4 which control loops are active and satisfies the failsafe.
-    fn publish_offboard_control_mode(&self) -> Result<(), rclrs::RclrsError> {
+    pub fn publish_offboard_control_mode(&self) -> Result<(), rclrs::RclrsError> {
         let mut msg = OffboardControlMode::default();
         msg.timestamp = get_clock_microseconds();
         msg.position = true;
@@ -108,7 +88,7 @@ impl OffboardControlNode {
     }
 
     /// Publish a TrajectorySetpoint in NED coordinates.
-    fn publish_trajectory_setpoint(&self, enu_pos: Vector3<f32>) -> Result<(), rclrs::RclrsError> {
+    pub fn publish_trajectory_setpoint(&self, enu_pos: Vector3<f32>) -> Result<(), rclrs::RclrsError> {
         let mut msg = TrajectorySetpoint::default();
         msg.timestamp = get_clock_microseconds();
 
@@ -125,7 +105,7 @@ impl OffboardControlNode {
     }
 
     /// Send a MAVLink-style VehicleCommand to the FMU.
-    fn publish_vehicle_command(&self, command: u32, param1: f32, param2: f32) -> Result<(), rclrs::RclrsError> {
+    pub fn publish_vehicle_command(&self, command: u32, param1: f32, param2: f32) -> Result<(), rclrs::RclrsError> {
         let mut msg = VehicleCommand::default();
         msg.timestamp = get_clock_microseconds();
         msg.command = command;
@@ -141,12 +121,12 @@ impl OffboardControlNode {
     }
 
     /// Step 2: Switch to Offboard Mode
-    fn arm(&self) -> Result<(), rclrs::RclrsError> {
+    pub fn arm(&self) -> Result<(), rclrs::RclrsError> {
         // VEHICLE_CMD_COMPONENT_ARM_DISARM (400), param1 = 1.0 (Arm)
         self.publish_vehicle_command(px4_msgs::msg::VEHICLE_CMD_COMPONENT_ARM_DISARM, 1.0, 0.0)
     }
 
-    fn set_offboard_mode(&self) -> Result<(), rclrs::RclrsError> {
+    pub fn set_offboard_mode(&self) -> Result<(), rclrs::RclrsError> {
         // VEHICLE_CMD_DO_SET_MODE (176), param1 = 1.0 (Custom), param2 = 6.0 (Offboard)
         self.publish_vehicle_command(px4_msgs::msg::VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0)
     }

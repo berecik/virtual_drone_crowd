@@ -42,15 +42,9 @@ class DetectorNode(Node):
         if self.current_depth_image is None:
             return
 
-        # Mock Detection Logic
-        # Assume center pixel depth check
-        height, width = self.current_depth_image.shape
-        center_depth = self.current_depth_image[height // 2, width // 2]
-
-        # OAK-D depth is usually in mm or meters depending on driver.
-        # Requirement says center pixel depth < 2.0m
-        # If it's float (meters)
-        if center_depth < 2.0:
+        detection = self.process_detection(self.current_depth_image)
+        if detection:
+            center_depth = detection
             self.get_logger().info(f"Person Found! Depth: {center_depth:.2f}m")
 
             target_msg = PoseStamped()
@@ -60,6 +54,20 @@ class DetectorNode(Node):
             target_msg.pose.position.y = 0.0
             target_msg.pose.position.z = 0.0
             self.target_pub.publish(target_msg)
+
+    def process_detection(self, depth_image):
+        """Pure logic for detection based on depth image."""
+        if depth_image is None:
+            return None
+
+        height, width = depth_image.shape
+        center_depth = depth_image[height // 2, width // 2]
+
+        # OAK-D depth is usually in mm or meters depending on driver.
+        # Requirement says center pixel depth < 2.0m
+        if center_depth < 2.0:
+            return center_depth
+        return None
 
 def main(args=None):
     rclpy.init(args=args)

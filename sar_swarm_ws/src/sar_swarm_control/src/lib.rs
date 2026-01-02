@@ -8,6 +8,10 @@ use rclrs;
 
 pub mod boids;
 pub mod communication;
+pub mod utils;
+pub mod search;
+#[path = "main.rs"]
+pub mod main_module;
 #[cfg(test)]
 pub mod tests;
 

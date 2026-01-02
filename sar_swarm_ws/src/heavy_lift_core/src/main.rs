@@ -3,20 +3,7 @@ use std::env;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use heavy_lift_msgs::msg::{EvacuateGoal, EvacuateResult, EvacuateFeedback};
-
-#[derive(Debug, PartialEq, Clone, Copy)]
-enum ExtractionState {
-    IDLE,
-    EN_ROUTE,
-    DESCENDING,
-    LIFTING,
-    RETURN,
-}
-
-struct EvacuationDirector {
-    state: ExtractionState,
-    current_goal: Option<EvacuateGoal>,
-}
+use heavy_lift_core::{ExtractionState, EvacuationDirector};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let context = rclrs::Context::new(env::args())?;
@@ -57,35 +44,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _timer = node.create_wall_timer(Duration::from_secs(2), move || {
         let mut s = state_timer_cb.lock().unwrap();
 
-        let next_state = match s.state {
-            ExtractionState::IDLE => None,
-            ExtractionState::EN_ROUTE => {
-                println!("State: EN_ROUTE -> DESCENDING");
-                Some(ExtractionState::DESCENDING)
-            },
-            ExtractionState::DESCENDING => {
-                println!("State: DESCENDING -> LIFTING");
-                Some(ExtractionState::LIFTING)
-            },
-            ExtractionState::LIFTING => {
-                println!("State: LIFTING -> RETURN");
-                Some(ExtractionState::RETURN)
-            },
-            ExtractionState::RETURN => {
-                println!("State: RETURN -> IDLE");
+        let transitioned = s.transition();
 
+        if transitioned {
+            if s.state == ExtractionState::IDLE {
                 let result = EvacuateResult {
                     success: true,
                     final_status: "Evacuation completed successfully".to_string(),
                 };
                 let _ = result_pub.publish(&result);
-
-                Some(ExtractionState::IDLE)
-            },
-        };
-
-        if let Some(ns) = next_state {
-            s.state = ns;
+            }
 
             let feedback = EvacuateFeedback {
                 distance_to_target: 0.0, // Mock distance

@@ -26,17 +26,7 @@ impl ZenohManager {
 
         tokio::spawn(async move {
             while let Ok(sample) = subscriber.recv_async().await {
-                let key = sample.key_expr.as_str();
-                let parts: Vec<&str> = key.split('/').collect();
-                if parts.len() >= 2 {
-                    let sender_id = parts[1].to_string();
-                    if sender_id != my_id {
-                        if let Ok(boid) = bincode::deserialize::<Boid>(&sample.payload.contiguous()) {
-                            let mut n = neighbors_clone.lock().unwrap();
-                            n.insert(sender_id, boid);
-                        }
-                    }
-                }
+                Self::process_sample(&sample, &my_id, &neighbors_clone);
             }
         });
 
@@ -44,6 +34,23 @@ impl ZenohManager {
             session,
             neighbors,
             drone_id,
+        }
+    }
+
+    pub fn process_sample(sample: &Sample, my_id: &str, neighbors: &Arc<Mutex<HashMap<String, Boid>>>) {
+        Self::process_raw_data(sample.key_expr.as_str(), &sample.payload.contiguous(), my_id, neighbors);
+    }
+
+    pub fn process_raw_data(key: &str, payload: &[u8], my_id: &str, neighbors: &Arc<Mutex<HashMap<String, Boid>>>) {
+        let parts: Vec<&str> = key.split('/').collect();
+        if parts.len() >= 2 {
+            let sender_id = parts[1].to_string();
+            if sender_id != my_id {
+                if let Ok(boid) = bincode::deserialize::<Boid>(payload) {
+                    let mut n = neighbors.lock().unwrap();
+                    n.insert(sender_id, boid);
+                }
+            }
         }
     }
 

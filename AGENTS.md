@@ -77,12 +77,33 @@ When an agent receives the "do maintenance" command, it must follow this iterati
 4.  **Update Documentation:**
     -   **AGENTS.md:** Ensure this guide reflects the latest architectural changes or maintenance procedures.
     -   **ROADMAP.md:** Update milestones and current status based on completed tasks.
-    -   **Project Docs:** Update `README.md`, `SYSTEM_DOCUMENTATION.md`, and `WORKING_PLAN.md` to keep them synchronized with the codebase.
+        -   **Status vocabulary:** Use `[ ]` (to do), `[/]` (in progress), or `[x]` (done/cover by tests).
+        -   **Format:** Start each task line with the status checkbox (e.g., `- [x] Task description`) or update the `Status` column in tables.
+        -   **Test Coverage:** Update the `(Test Coverage: X%)` next to Phase headers. Calculate this as the percentage of tasks within that phase marked as `(cover by tests)`.
+        -   **Subtask Coverage:** For complex tasks with multiple subtasks, describe the specific coverage for each subtask if it is possible and makes sense (e.g., `- [x] (cover by tests) **Task Name**: Description (Coverage: Unit tests for X and Y)`).
+    -   **Project Docs:** Update `README.md` and `SYSTEM_DOCUMENTATION.md` to keep them synchronized with the codebase.
 5.  **Log Maintenance:** Record the date and summary of changes in the project's history or a dedicated `MAINTENANCE.log`.
 
-*Last Maintenance: 2026-01-02 - Performed routine maintenance, verified codebase integrity, and confirmed environment constraints for testing. Project is stable and transitioning to Phase 2.*
+### 2. Testing Task ("do tests")
+When an agent receives the "do tests" command, it must prioritize coverage and robustness:
+1.  **Expand Test Coverage:**
+    -   **Unit Tests:** Identify untested functions (e.g., in `boids.rs`, `utils.rs`, `communication.rs`) and write comprehensive unit tests.
+    -   **Integration Tests:** Create or update tests in `sar_swarm_ws/src/sar_swarm_control/tests/` to verify multi-module interactions, such as the PX4 handshake logic or Zenoh communication.
+    -   **Edge Cases:** Add tests for negative altitudes, disconnected peers, and malformed messages.
+2.  **Execute & Verify:**
+    -   Run `cargo test` and ensure coverage is as high as possible.
+    -   In environments where `rclrs` cannot compile, use a `tests_standalone` approach to verify logic.
+3.  **Fix & Repeat:**
+    -   Fix all discovered issues immediately.
+    -   Repeat the process until coverage is satisfactory and no tests fail.
+3.  **Update Documentation:**
+    -   **TESTING.md:** Update the global test status and provide a **detailed explanation** for all tests (Purpose, Input, Expected Outcome).
+    -   **Module Testing Docs:** Update specific files like `sar_swarm_ws/src/sar_swarm_control/TESTING.md` with detailed test descriptions.
+    -   **Project Docs:** Ensure `SYSTEM_DOCUMENTATION.md` reflects any changes in system behavior discovered during testing.
 
-### 2. Simulation First
+*Last Maintenance: 2026-01-02 14:35 - Completed second "do maintenance" cycle; 17 tests verified (13 Rust Swarm, 1 Rust Heavy Lift, 3 Python Perception). Fixed Zenoh API usage in standalone tests and refined Python mocking.*
+
+### 3. Simulation First
 Always validate logic in simulation.
 -   `mock_drone_sim.py`: Fast, lightweight for logic/protocol testing.
 -   `SITL (PX4/Gazebo)`: (Planned) For physics and control tuning.
