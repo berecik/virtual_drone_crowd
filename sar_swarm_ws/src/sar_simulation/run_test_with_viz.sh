@@ -1,5 +1,5 @@
 #!/bin/bash
-source /opt/ros/jazzy/setup.bash
+source /opt/ros/humble/setup.bash
 if [ -f /root/sar_swarm_ws/install/setup.bash ]; then
     source /root/sar_swarm_ws/install/setup.bash
 fi

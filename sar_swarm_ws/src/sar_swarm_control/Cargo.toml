@@ -9,7 +9,6 @@ homepage = "https://marysia.app"
 [dependencies]
 rclrs = "0.3"
 px4_msgs = { path = "./px4_msgs_mock" }
-geometry_msgs = "0.1" # Mock or real if available
 tokio = { version = "1.10", features = ["full"] }
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
 serde = { version = "1.0", features = ["derive"] }

@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# Source ROS 2 Jazzy
-source "/opt/ros/jazzy/setup.bash"
+# Source ROS 2 Humble
+source "/opt/ros/humble/setup.bash"
 
 # Source the workspace if it exists
 if [ -f "/root/sar_swarm_ws/install/setup.bash" ]; then

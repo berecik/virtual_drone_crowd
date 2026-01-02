@@ -10,11 +10,14 @@ pub mod boids;
 pub mod communication;
 pub mod utils;
 pub mod search;
-pub mod offboard_control_node;
 #[path = "main.rs"]
 pub mod main_module;
+pub use main_module::{LifecycleState, OffboardControlNode};
+
 #[cfg(test)]
 pub mod tests;
+#[cfg(test)]
+pub mod tests_standalone;
 
 pub fn hello_swarm() {
     println!("Hello from SAR Swarm Control!");

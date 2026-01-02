@@ -17,6 +17,7 @@ services:
   swarm_node_1:
     image: sar_swarm_companion:latest
     container_name: swarm_node_1
+    restart: always
     networks:
       swarm_net:
         ipv4_address: 10.10.1.21
@@ -24,7 +25,21 @@ services:
       - ROS_DOMAIN_ID=1
     volumes:
       - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
-    command: bash -c "cd /root/sar_swarm_ws/src/sar_swarm_control && cargo run -- 1"
+    command: bash -c "cd /root/sar_swarm_ws/src/sar_swarm_control && cargo run"
+    depends_on:
+      - sitl_drone_1
+
+  perception_node_1:
+    image: sar_swarm_companion:latest
+    container_name: perception_node_1
+    networks:
+      swarm_net:
+        ipv4_address: 10.10.1.31
+    environment:
+      - ROS_DOMAIN_ID=1
+    volumes:
+      - ./sar_swarm_ws/src:/root/sar_swarm_ws/src
+    command: bash -c "export PYTHONPATH=\$PYTHONPATH:/root/sar_swarm_ws/src/sar_perception && ros2 run sar_perception detector"
     depends_on:
       - sitl_drone_1
 

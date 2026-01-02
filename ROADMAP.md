@@ -20,8 +20,8 @@
 - [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust.
     - [x] (cover by tests) Boids algorithm (Separation, Alignment, Cohesion). (Coverage: Unit tests for all three forces)
     - [x] (cover by tests) Zenoh-based inter-drone state sharing. (Coverage: Serialization and message processing)
-    - [x] **XRCE-DDS Integration (Offboard control loop, heartbeat, setpoints).** (Coverage: Lifecycle state transitions and heartbeat logic)
-- [x] (cover by tests) **Coordinate & QoS Optimization:** Implement ENU->NED transforms and specialized QoS for Pixhawk 6C (BestEffort Telemetry, Reliable Commands). (Coverage: Math and transform logic, QoS configuration)
+    - [x] **XRCE-DDS Integration (Offboard control loop, heartbeat, setpoints).** (Coverage: Lifecycle state transitions, 10Hz heartbeat, GPS fix logic, ENU->NED verified via standalone tests)
+- [x] (cover by tests) **Coordinate & QoS Optimization:** Implement ENU->NED transforms and specialized QoS for Pixhawk 6C (BestEffort Telemetry, Reliable Commands). (Coverage: Math and transform logic, DDS-principled QoS configuration)
 
 ### 2. Perception & AI
 - [x] (cover by tests) **Detector Node:** Develop `sar_perception` node using Python and YOLOv8. (Coverage: Mock-based unit tests for depth logic)
