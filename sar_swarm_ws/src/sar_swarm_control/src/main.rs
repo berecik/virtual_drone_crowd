@@ -1,104 +1,209 @@
-/// Virtual Drone Crowd - Swarm Control Node
-/// Author: beret <beret@hipisi.org.pl>
-/// Company: Marysia Software Limited <ceo@marysia.app>
-/// Domain: app.marysia.drone
-/// Website: https://marysia.app
+/// Virtual Drone Crowd - Phase 1: Core Control Task
+///
+/// This node implements a PX4 Offboard control loop using ROS 2 (rclrs) and XRCE-DDS.
+/// It handles the necessary "proof-of-life" heartbeat, coordinate transformations,
+/// and QoS settings required for reliable communication with the Pixhawk 6C.
+///
+/// Author: Senior Robotics Systems Engineer
+/// Project: Virtual Drone Crowd (SAR Swarm)
 
-use rclrs;
+use rclrs::{self, QOS_PROFILE_DEFAULT};
+use px4_msgs::msg::{OffboardControlMode, TrajectorySetpoint, VehicleCommand};
 use std::env;
 use std::sync::{Arc, Mutex};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use nalgebra::Vector3;
-use sar_swarm_control::boids::{Boid, calculate_flocking_vector};
-use sar_swarm_control::communication::ZenohManager;
-use px4_msgs::msg::{PoseStamped, Twist};
+
+/// --- COORDINATE TRANSFORMATION (ENU -> NED) ---
+/// ROS 2 standard: ENU (East-North-Up)
+/// PX4 standard: NED (North-East-Down)
+///
+/// Transformation Logic:
+/// X_ned = Y_enu (North)
+/// Y_ned = X_enu (East)
+/// Z_ned = -Z_enu (Down)
+///
+/// This is critical because if we send a positive Z in ROS (Up),
+/// without conversion, PX4 would interpret it as Down (plunging into the ground).
+fn enu_to_ned(x: f32, y: f32, z: f32) -> [f32; 3] {
+    [y, x, -z]
+}
+
+/// Helper to get current timestamp in microseconds, required by PX4 uORB topics.
+fn get_clock_microseconds() -> u64 {
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or(Duration::from_secs(0))
+        .as_micros() as u64
+}
+
+struct OffboardControlNode {
+    offboard_control_mode_publisher: Arc<rclrs::Publisher<OffboardControlMode>>,
+    trajectory_setpoint_publisher: Arc<rclrs::Publisher<TrajectorySetpoint>>,
+    vehicle_command_publisher: Arc<rclrs::Publisher<VehicleCommand>>,
+    offboard_setpoint_counter: u64,
+}
+
+impl OffboardControlNode {
+    fn new(node: &mut rclrs::Node) -> Result<Self, rclrs::RclrsError> {
+        // --- QUALITY OF SERVICE (QoS) CONFIGURATION ---
+        // PX4's uXRCE-DDS bridge uses "Best Effort" for high-frequency topics.
+        // A "Reliable" (default) ROS 2 subscriber/publisher will NOT communicate with
+        // a "Best Effort" peer. We must match the profile.
+        // Reliability: BestEffort (Low latency, no retransmissions)
+        // Durability: TransientLocal (Late-joining subscribers get the last message)
+        // History: KeepLast(1) (Only the freshest data matters for control)
+        let qos_best_effort = rclrs::QosProfile {
+            reliability: rclrs::ReliabilityPolicy::BestEffort,
+            durability: rclrs::DurabilityPolicy::TransientLocal,
+            history: rclrs::HistoryPolicy::KeepLast,
+            depth: 1,
+            ..QOS_PROFILE_DEFAULT
+        };
+
+        // Command topics usually require "Reliable" to ensure the mode change or arming occurs.
+        let qos_reliable = rclrs::QosProfile {
+            reliability: rclrs::ReliabilityPolicy::Reliable,
+            durability: rclrs::DurabilityPolicy::TransientLocal,
+            history: rclrs::HistoryPolicy::KeepLast,
+            depth: 1,
+            ..QOS_PROFILE_DEFAULT
+        };
+
+        let offboard_control_mode_publisher = node.create_publisher::<OffboardControlMode>(
+            "/fmu/in/offboard_control_mode",
+            qos_best_effort.clone(),
+        )?;
+
+        let trajectory_setpoint_publisher = node.create_publisher::<TrajectorySetpoint>(
+            "/fmu/in/trajectory_setpoint",
+            qos_best_effort,
+        )?;
+
+        let vehicle_command_publisher = node.create_publisher::<VehicleCommand>(
+            "/fmu/in/vehicle_command",
+            qos_reliable,
+        )?;
+
+        Ok(Self {
+            offboard_control_mode_publisher: Arc::new(offboard_control_mode_publisher),
+            trajectory_setpoint_publisher: Arc::new(trajectory_setpoint_publisher),
+            vehicle_command_publisher: Arc::new(vehicle_command_publisher),
+            offboard_setpoint_counter: 0,
+        })
+    }
+
+    /// Publish the OffboardControlMode heartbeat.
+    /// This tells PX4 which control loops are active and satisfies the failsafe.
+    fn publish_offboard_control_mode(&self) -> Result<(), rclrs::RclrsError> {
+        let mut msg = OffboardControlMode::default();
+        msg.timestamp = get_clock_microseconds();
+        msg.position = true;
+        msg.velocity = false;
+        msg.acceleration = false;
+        msg.attitude = false;
+        msg.body_rate = false;
+
+        self.offboard_control_mode_publisher.publish(&msg)
+    }
+
+    /// Publish a TrajectorySetpoint in NED coordinates.
+    fn publish_trajectory_setpoint(&self, enu_pos: Vector3<f32>) -> Result<(), rclrs::RclrsError> {
+        let mut msg = TrajectorySetpoint::default();
+        msg.timestamp = get_clock_microseconds();
+
+        let ned_pos = enu_to_ned(enu_pos.x, enu_pos.y, enu_pos.z);
+        msg.position = ned_pos;
+        msg.yaw = 0.0; // 0.0 in NED is North
+
+        // IMPORTANT: Velocity and Acceleration must be NaN to indicate they are uncontrolled
+        // in position control mode.
+        msg.velocity = [f32::NAN; 3];
+        msg.acceleration = [f32::NAN; 3];
+
+        self.trajectory_setpoint_publisher.publish(&msg)
+    }
+
+    /// Send a MAVLink-style VehicleCommand to the FMU.
+    fn publish_vehicle_command(&self, command: u32, param1: f32, param2: f32) -> Result<(), rclrs::RclrsError> {
+        let mut msg = VehicleCommand::default();
+        msg.timestamp = get_clock_microseconds();
+        msg.command = command;
+        msg.param1 = param1;
+        msg.param2 = param2;
+        msg.target_system = 1;
+        msg.target_component = 1;
+        msg.source_system = 1;
+        msg.source_component = 1;
+        msg.from_external = true;
+
+        self.vehicle_command_publisher.publish(&msg)
+    }
+
+    /// Step 2: Switch to Offboard Mode
+    fn arm(&self) -> Result<(), rclrs::RclrsError> {
+        // VEHICLE_CMD_COMPONENT_ARM_DISARM (400), param1 = 1.0 (Arm)
+        self.publish_vehicle_command(px4_msgs::msg::VEHICLE_CMD_COMPONENT_ARM_DISARM, 1.0, 0.0)
+    }
+
+    fn set_offboard_mode(&self) -> Result<(), rclrs::RclrsError> {
+        // VEHICLE_CMD_DO_SET_MODE (176), param1 = 1.0 (Custom), param2 = 6.0 (Offboard)
+        self.publish_vehicle_command(px4_msgs::msg::VEHICLE_CMD_DO_SET_MODE, 1.0, 6.0)
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let context = rclrs::Context::new(env::args())?;
-    let args: Vec<String> = env::args().collect();
-    let drone_id_num: u32 = args.get(1).and_then(|s| s.parse().ok()).unwrap_or(1);
-    let drone_id = format!("drone_{}", drone_id_num);
+    let mut node = rclrs::Node::new(&context, "offboard_control_node")?;
 
-    let node_name = format!("swarm_node_{}", drone_id_num);
-    let mut node = rclrs::Node::new(&context, &node_name)?;
+    let offboard_node = Arc::new(Mutex::new(OffboardControlNode::new(&mut node)?));
 
-    let my_boid = Arc::new(Mutex::new(Boid {
-        drone_id: drone_id.clone(),
-        position: Vector3::new(0.0, 0.0, 0.0),
-        velocity: Vector3::new(0.0, 0.0, 0.0),
-    }));
+    println!("Starting Offboard Control Loop at 20Hz...");
 
-    let zenoh = Arc::new(ZenohManager::new(drone_id.clone()).await);
+    // Target Hover Setpoint: 5 meters Up (ENU: [0, 0, 5])
+    let hover_setpoint = Vector3::new(0.0, 0.0, 5.0);
 
-    let vel_pub = node.create_publisher::<Twist>(
-        "/mavros/setpoint_velocity/cmd_vel_unstamped",
-        rclrs::QOS_PROFILE_DEFAULT,
-    )?;
+    // Create a 20Hz timer (50ms period)
+    let node_timer = Arc::clone(&offboard_node);
+    let _timer = node.create_wall_timer(Duration::from_millis(50), move || {
+        let mut n = node_timer.lock().unwrap();
 
-    let my_boid_cb = Arc::clone(&my_boid);
-    let _pose_sub = node.create_subscription::<PoseStamped, _>(
-        "/mavros/local_position/pose",
-        rclrs::QOS_PROFILE_DEFAULT,
-        move |msg: PoseStamped| {
-            let mut b = my_boid_cb.lock().unwrap();
-            b.position = Vector3::new(msg.pose.position.x, msg.pose.position.y, msg.pose.position.z);
-        },
-    )?;
+        // Step 1: Stream OffboardControlMode for 10 cycles (0.5s) before switching mode
+        n.publish_offboard_control_mode().unwrap();
 
-    let my_boid_timer = Arc::clone(&my_boid);
-    let zenoh_timer = Arc::clone(&zenoh);
-    let neighbors_timer = Arc::clone(&zenoh.neighbors);
-
-    let _timer = node.create_wall_timer(std::time::Duration::from_millis(100), move || {
-        let (me, neighbors_list) = {
-            let me = my_boid_timer.lock().unwrap().clone();
-            let neighbors = neighbors_timer.lock().unwrap();
-            let neighbors_list: Vec<Boid> = neighbors.values().cloned().collect();
-            (me, neighbors_list)
-        };
-
-        let flocking_force = calculate_flocking_vector(&me, &neighbors_list);
-
-        // Update own velocity (simple integration for simulation)
-        {
-            let mut me_lock = my_boid_timer.lock().unwrap();
-            me_lock.velocity += flocking_force * 0.1; // dt = 0.1
-            // Limit velocity
-            let max_vel = 2.0;
-            if me_lock.velocity.norm() > max_vel {
-                me_lock.velocity = me_lock.velocity.normalize() * max_vel;
-            }
+        if n.offboard_setpoint_counter == 10 {
+            // Step 2: Change to Offboard mode and Arm
+            println!("Handshake established. Switching to OFFBOARD and ARMING...");
+            n.set_offboard_mode().unwrap();
+            n.arm().unwrap();
         }
 
-        let final_vel = my_boid_timer.lock().unwrap().velocity;
+        // Step 3: Continue streaming setpoints
+        // Even during the handshake, we should publish setpoints to avoid jumps
+        // when the mode actually switches.
+        n.publish_trajectory_setpoint(hover_setpoint).unwrap();
 
-        // Publish to Zenoh
-        let zenoh_pub = Arc::clone(&zenoh_timer);
-        let me_for_zenoh = my_boid_timer.lock().unwrap().clone();
-        tokio::spawn(async move {
-            zenoh_pub.publish_state(&me_for_zenoh).await;
-        });
-
-        // Publish to ROS 2
-        let mut twist = Twist::default();
-        twist.linear.x = final_vel.x;
-        twist.linear.y = final_vel.y;
-        twist.linear.z = final_vel.z;
-        let _ = vel_pub.publish(&twist);
+        if n.offboard_setpoint_counter < 11 {
+            n.offboard_setpoint_counter += 1;
+        }
     })?;
 
-    println!("Swarm Node {} started!", drone_id);
+    // Spin the node to process the timer callbacks
+    // Since rclrs::spin is blocking, and we are in an async main,
+    // we can use a thread or just call spin directly if we don't need other async tasks.
+    let node_spin = Arc::new(Mutex::new(node));
+    let n_clone = Arc::clone(&node_spin);
 
-    // Use a separate thread for ROS 2 spinning to not block tokio
-    let node_arc = Arc::new(Mutex::new(node));
-    let node_spin = Arc::clone(&node_arc);
     std::thread::spawn(move || {
-        let n = node_spin.lock().unwrap();
-        rclrs::spin(&n).unwrap();
+        let n = n_clone.lock().unwrap();
+        rclrs::spin(&n).map_err(|e| println!("ROS 2 Spin Error: {:?}", e)).ok();
     });
 
-    // Keep the main task alive
+    println!("Offboard Node is active. Target: Hover at 5m.");
+
+    // Keep the main thread alive
     loop {
-        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+        tokio::time::sleep(Duration::from_secs(1)).await;
     }
 }

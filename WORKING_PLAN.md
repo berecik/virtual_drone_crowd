@@ -11,18 +11,19 @@ This plan outlines the specific technical tasks required to move from the curren
 - [x] **Swarm Node (Rust):** Implement a robust `sar_swarm_control` node in Rust. [COMPLETED]
     - [x] Boids algorithm (Separation, Alignment, Cohesion).
     - [x] Zenoh-based inter-drone state sharing.
-    - [x] ROS 2 integration (MAVROS topics).
-- [ ] **MAVLink Integration:** Connect ROS 2 `TrajectorySetpoint` to PX4 via XRCE-DDS or MAVROS.
+    - [x] XRCE-DDS Integration (Offboard control loop, heartbeat, setpoints).
+- [x] **Coordinate & QoS Optimization:** Implement ENU->NED transforms and "Best Effort" QoS for Pixhawk 6C compatibility. [COMPLETED]
 
 ### 2. Perception & AI
-- [ ] **Detector Node:** Develop `sar_perception` node using Python and YOLOv8.
+- [x] **Detector Node:** Develop `sar_perception` node using Python and YOLOv8. [DONE]
 - [ ] **Localization:** Implement 3D point estimation of detections using OAK-D depth data and TF2 transforms.
 - [ ] **Search Algorithm:** Implement a lawnmower or area-partitioning search pattern.
 
 ### 3. Simulation & Validation
-- [ ] **SITL Setup:** Integrate PX4 Software-in-the-Loop with Gazebo Ignition.
+- [x] **SITL Setup:** Integrate PX4 Software-in-the-Loop with Gazebo Ignition. [OAK-D Config DONE]
+- [x] **Core Control Validation:** Verified Offboard handshake and hover setpoint logic. [DONE]
 - [ ] **Logic Testing:** Validate autonomous "Target Found" -> "Orbit Target" sequence in simulation.
-- [ ] **Hardware-in-the-loop (HITL):** Test Jetson Orin Nano communication with Pixhawk 6C.
+- [ ] **Hardware-in-the-loop (HITL):** Test Jetson Orin Nano communication with Pixhawk 6C via XRCE-DDS Agent.
 
 ## Phase 2: Heavy-Lift & Extraction [Phase 2 Implementation Started]
 

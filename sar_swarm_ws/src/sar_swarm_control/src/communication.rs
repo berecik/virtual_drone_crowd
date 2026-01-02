@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use zenoh::prelude::r#async::*;
 use crate::boids::Boid;
-use serde_json;
+use bincode;
 
 pub struct ZenohManager {
     session: Session,
@@ -27,12 +27,11 @@ impl ZenohManager {
         tokio::spawn(async move {
             while let Ok(sample) = subscriber.recv_async().await {
                 let key = sample.key_expr.as_str();
-                // key is like swarm/drone_1/state
                 let parts: Vec<&str> = key.split('/').collect();
                 if parts.len() >= 2 {
                     let sender_id = parts[1].to_string();
                     if sender_id != my_id {
-                        if let Ok(boid) = serde_json::from_slice::<Boid>(&sample.payload.contiguous()) {
+                        if let Ok(boid) = bincode::deserialize::<Boid>(&sample.payload.contiguous()) {
                             let mut n = neighbors_clone.lock().unwrap();
                             n.insert(sender_id, boid);
                         }
@@ -50,7 +49,8 @@ impl ZenohManager {
 
     pub async fn publish_state(&self, boid: &Boid) {
         let key = format!("swarm/{}/state", self.drone_id);
-        let payload = serde_json::to_vec(boid).unwrap();
-        self.session.put(key, payload).res().await.unwrap();
+        if let Ok(payload) = bincode::serialize(boid) {
+            self.session.put(key, payload).res().await.unwrap();
+        }
     }
 }
