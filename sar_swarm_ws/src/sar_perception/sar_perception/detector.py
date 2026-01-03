@@ -128,7 +128,10 @@ class PerceptionNode(Node):
 
             # Publish result
             self.victim_pub.publish(p_map)
-            self.get_logger().info(f"Victim detected at: {p_map.point.x:.2f}, {p_map.point.y:.2f}, {p_map.point.z:.2f}")
+            try:
+                self.get_logger().info(f"Victim detected at: {p_map.point.x:.2f}, {p_map.point.y:.2f}, {p_map.point.z:.2f}")
+            except (TypeError, ValueError):
+                self.get_logger().info(f"Victim detected at: {p_map.point.x}, {p_map.point.y}, {p_map.point.z}")
 
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException) as e:
             self.get_logger().warn(f"TF Error: {e}")

@@ -7,7 +7,7 @@ This document tracks the high-level testing status and provides detailed explana
 | Module | Unit Tests | Integration Tests | SITL / Hardware | Status |
 | :--- | :---: | :---: | :---: | :--- |
 | `sar_swarm_control` (Rust) | ✅ Pass (17)* | ⏳ Pending | ⏳ Pending | Lifecycle & ENU/NED Verified. |
-| `sar_perception` (Python) | ✅ Pass (8) | ⏳ Pending | ⏳ Pending | Robust Mocks for Standalone Execution |
+| `sar_perception` (Python) | ✅ Pass (13) | ⏳ Pending | ⏳ Pending | Robust Mocks for Standalone Execution |
 | `heavy_lift_core` (Rust) | ✅ Pass (1) | ⏳ Pending | ⏳ Pending | Logic Verified via Standalone Script |
 
 \* *Note: Rust tests for `sar_swarm_control` require a sourced ROS 2 environment for compilation due to `rclrs` dependency.*
