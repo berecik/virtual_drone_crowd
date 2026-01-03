@@ -10,15 +10,17 @@
 This repository bridges the gap between simulation and reality, providing the source code for swarm control logic (Rust), simulation environments (Gazebo/PX4), and high-performance communication middleware based on **Eclipse Zenoh** and **ROS 2**.
 
 ### 🇵🇱 Przegląd Projektu (Polish)
-Projekt DAS-SAR ma na celu zrewolucjonizowanie operacji poszukiwawczo-ratowniczych (SAR) poprzez wdrożenie kooperacyjnego roju autonomicznych dronów zdolnych do ewakuacji ciężkich ładunków. Poprzez fizyczne połączenie wielu mniejszych, przenośnych dronów z jednym ładunkiem (np. noszami), system uniezależnia udźwig od wielkości pojedynczej jednostki, umożliwiając szybkie wdrożenie w trudno dostępnym terenie.
+Projekt DAS-SAR ma na celu zrewolucjonizowanie operacji poszukiwawczo-ratowniczych (SAR) poprzez wdrożenie kooperacyjnego roju autonomicznych dronów zdolnych do ewakuacji ciężkich ładunków. Dzięki wykorzystaniu **modelu Boids**, algorytmu **Raft Consensus** oraz sieci **Zenoh**, system zapewnia bezpieczną koordynację i transport osób w trudno dostępnych terenach (góry, morze, miasta).
 
 ## 🚀 Key Features
 
 *   **Distributed Admittance Control:** Implements a mass-spring-damper model for each drone, allowing the swarm to stabilize slung loads without rigid position fighting.
-*   **Decentralized Control:** Built on ROS 2 and Rust for deterministic, safety-critical swarm coordination.
-*   **Mesh Networking (Zenoh):** Utilizes **Eclipse Zenoh** for high-performance, low-latency communication in GPS-denied and WiFi-congested environments.
-*   **Edge AI:** On-board human detection using NVIDIA Jetson and depth-sensing cameras (OAK-D / RealSense).
-*   **Marine & Terrain SAR:** Specialized support for maritime drift search and urban canyon evacuation.
+*   **Swarm Intelligence:** Emergent flocking behaviors based on the **Boids Model** (Separation, Alignment, Cohesion) and dynamic area partitioning.
+*   **Consensus & Coordination:** Uses the **Raft Consensus** algorithm for reliable state agreement and leader election across the swarm.
+*   **Mesh Networking (Zenoh):** Utilizes **Eclipse Zenoh** for high-performance, low-latency communication, reducing discovery overhead by 99% in WiFi-congested environments.
+*   **Safety-Critical Core:** Control loops implemented in **Rust** to guarantee memory safety and real-time performance.
+*   **Tactical Interfaces:** Multi-platform interaction via **React GCS** (3D visualization) and **Flutter Tactical Terminals** (mobile field coordination).
+*   **Marine & Terrain SAR:** Specialized support for maritime drift search (heave compensation) and urban canyon evacuation.
 
 ## 🏗 Project Structure
 
@@ -45,11 +47,12 @@ Projekt DAS-SAR ma na celu zrewolucjonizowanie operacji poszukiwawczo-ratowniczy
 | Component | Technology |
 | :--- | :--- |
 | **Core Framework** | ROS 2 (Humble) |
-| **Swarm Control** | Rust (rclrs / MAVSDK-Rust) |
-| **Edge AI/Vision** | Python (PyTorch/YOLOv8) |
-| **Middleware** | Eclipse Zenoh |
-| **Flight Stack** | PX4 Autopilot |
-| **Hardware** | NVIDIA Jetson Orin Nano, Pixhawk 6C, OAK-D Pro / RealSense D435i |
+| **Swarm Control** | Rust (rclrs / MAVSDK-Rust), Raft Consensus |
+| **Edge AI/Vision** | Python (PyTorch/YOLOv8), Luxonis OAK-D / RealSense |
+| **Middleware** | Eclipse Zenoh (Mesh Networking) |
+| **User Interfaces** | React (GCS), Flutter (Tactical Terminal) |
+| **Hardware (Ph 1)** | NVIDIA Jetson Orin Nano, Pixhawk 6C, Holybro X500 V2 |
+| **Hardware (Ph 2)** | T-Motor U15 II, Hobbywing X9 Plus, Gaia 160MP |
 | **Optimization** | ACADO/OSQP MPC Solvers |
 
 ## 🚦 Getting Started
@@ -91,7 +94,8 @@ cargo test
 ## 📖 Documentation
 
 For detailed information, please refer to:
-- [System Documentation](SYSTEM_DOCUMENTATION.md) - Deep dive into architecture and control theory.
+- [System Documentation (English)](SYSTEM_DOCUMENTATION.md) - Deep dive into architecture and control theory.
+- [Dokumentacja Systemu (Polski)](SYSTEM_DOCUMENTATION_PL.md) - Pełna dokumentacja techniczna i sprzętowa.
 - [Roadmap](ROADMAP.md) - Project timeline and milestones.
 - [Testing](TESTING.md) - Detailed testing instructions.
 - [Original Technical Study (Polish)](docs/Projekt%20Dronów%20SAR_%20Ewakuacja%20Człowieka.md)
