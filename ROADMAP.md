@@ -38,13 +38,14 @@
 
 ### 4. Heavy-Lift Platform Build
 - [x] (cover by tests) **Architecture Skeleton:** Initialize `heavy_lift_core` with action definitions and state machine. (Coverage: State transition logic)
-- [ ] **Hardware Procurement:** Order Gaia 160MP frame, T-Motor U13/U15 propulsion, and 12S batteries.
-- [ ] **Power System:** Design and build high-current PDB and BEC systems for Jetson AGX Orin.
-- [ ] **Rigging:** Design spreader bar for NATO stretcher and integrate electronic release hooks.
+- [ ] **Hardware Procurement:** Order Gaia 160MP frame, T-Motor U15 II propulsion, and 12S batteries.
+- [ ] **Power System:** Design and build high-current PDB and BEC systems (Matek BEC 12S-PRO) for Jetson Orin Nano / AGX Orin.
+- [ ] **Rigging:** Design spreader bar for NATO stretcher and integrate electronic release hooks for Distributed Lift System (DLS).
 
 ### 5. Advanced Control Algorithms
-- [ ] **Admittance Control:** Implement force-feedback-based position adjustment in Rust.
-- [ ] **Load Damping:** Develop algorithms to minimize payload oscillation during transport.
+- [ ] **Admittance Control:** Implement force-feedback-based position adjustment in Rust for swarm-payload coupling.
+- [ ] **MPC Solver:** Integrate ACADO/OSQP MPC solvers for non-linear trajectory optimization and tension management.
+- [ ] **Marine SAR Adaptation:** Implement heave compensation and VIO-based landing for pitching ship decks.
 - [ ] **Redundancy Logic:** Implement "Motor Failure" recovery modes for X8 coaxial configuration.
 
 ### 6. Ground Station & UX

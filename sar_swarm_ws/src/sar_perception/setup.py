@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'detector = sar_perception.detector:main',
-            'search_planner = sar_perception.search_planner:main'
+            'search_planner = sar_perception.search_planner:main',
+            'object_localizer = sar_perception.object_localizer:main'
         ],
     },
 )

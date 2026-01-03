@@ -2,11 +2,11 @@
 
 This document tracks the high-level testing status and provides detailed explanations of the verification suite across the Virtual Drone Crowd project.
 
-## 🧪 Current Status (2026-01-02)
+## 🧪 Current Status (2026-01-03)
 
 | Module | Unit Tests | Integration Tests | SITL / Hardware | Status |
 | :--- | :---: | :---: | :---: | :--- |
-| `sar_swarm_control` (Rust) | ✅ Pass (13)* | ⏳ Pending | ⏳ Pending | Verified in ROS 2 env previously. |
+| `sar_swarm_control` (Rust) | ✅ Pass (17)* | ⏳ Pending | ⏳ Pending | Lifecycle & ENU/NED Verified. |
 | `sar_perception` (Python) | ✅ Pass (8) | ⏳ Pending | ⏳ Pending | Robust Mocks for Standalone Execution |
 | `heavy_lift_core` (Rust) | ✅ Pass (1) | ⏳ Pending | ⏳ Pending | Logic Verified via Standalone Script |
 

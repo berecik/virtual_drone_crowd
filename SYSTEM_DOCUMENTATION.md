@@ -3,68 +3,68 @@
 **Authors:** beret@hipisi.org.pl & Marysia Software Limited (ceo@marysia.app, https://marysia.app)  
 **Domain:** app.marysia.drone
 
-## 1. System Architecture
+## 1. Executive Summary
 
-The system is designed as a decentralized swarm of autonomous agents. It follows a multi-layered architecture to ensure safety, performance, and flexibility.
+The Virtual Drone Crowd project addresses the logistical challenges of Search and Rescue (SAR) by introducing a **Distributed Lift System (DLS)**. By decoupling lift capacity from individual drone size, a swarm of man-portable drones can coordinate to transport heavy payloads (100kg+), enabling rapid deployment in remote or urban-canyon environments inaccessible to traditional heavy-lift aircraft.
 
-### 1.1 Hardware Layers
-- **Flight Control (Low-Level):** Pixhawk 6C/6X running PX4 Autopilot. Handles IMU fusion, stabilization, and motor output.
-- **Companion Compute (High-Level):** NVIDIA Jetson Orin Nano (Phase 1) or AGX Orin (Phase 2). Runs ROS 2, AI vision, and swarm coordination logic.
-- **Vision Subsystem:** Luxonis OAK-D Pro (active IR depth sensing) or Intel RealSense D435i.
+## 2. Theoretical Framework
 
-### 1.2 Software Stack
-- **Operating System:** Ubuntu 22.04 LTS with ROS 2 Humble.
-- **Communication Middleware:** Eclipse Zenoh. Replaces standard DDS for swarm networking to reduce discovery overhead and handle unreliable wireless links.
-- **Swarm Logic (Rust):** Implemented in Rust for memory safety and deterministic execution. Handles leader election (Raft), formation control, and tether tension management (Phase 2).
-- **Perception Layer (Python):** Uses YOLOv8 (TensorRT optimized) for real-time victim detection.
+### 2.1 Physics of Coupled Slung Load Systems
+The engineering foundation rests on cooperative aerial manipulation. Agents are physically coupled through the payload via flexible tethers. The system state is the resultant vector of tension forces applied by $N$ agents. This allows for "geometric control," where the payload's orientation can be manipulated independently of its trajectory—critical for maneuvering through complex environments.
 
-## 2. Communication Model
+### 2.2 Control Strategies: Admittance vs. Impedance
+Standard position controllers are too "rigid" for coupled systems, where small GNSS drifts can cause drones to "fight" each other.
+*   **Impedance Control:** High stiffness, resists external forces to maintain position.
+*   **Admittance Control:** Low stiffness, "admits" external forces and complies with them.
+The system uses **Admittance Control**, modeling each drone as a virtual mass-spring-damper system. This mimics biological coordination (e.g., ants moving food), where agents adjust based on felt forces.
 
-The system utilizes a hybrid communication model:
-1. **Intra-Drone (ROS 2):** Nodes within a single drone communicate via standard ROS 2 topics/services.
-2. **Inter-Drone (Zenoh):** The `zenoh-bridge-ros2dds` bridges selected topics to a global swarm mesh network.
-3. **Ground Station (Zenoh-JS/Flutter):** Web-based and mobile dashboards connect to the swarm via Zenoh routers.
+### 2.3 Optimization: Model Predictive Control (MPC)
+To achieve stable flight, each agent runs a non-linear MPC solver (ACADO/OSQP) on its companion computer at 50Hz+.
+**MPC Constraints:**
+1.  **Actuator Limits:** Motors cannot exceed max thrust.
+2.  **Cable Tension:** $T > 0$ (Cables must never go slack to avoid snap loads).
+3.  **Collision Avoidance:** Minimum separation distance maintenance.
 
-### Quality of Service (QoS)
-- **Telemetry/Control:** Reliable, high-priority.
-- **Video/LIDAR:** Best-effort, low-latency.
+## 3. Hardware Architecture
 
-## 3. Subsystems
+### 3.1 Phase 1: Scaled Prototype ("Micro" Swarm)
+*   **Airframe:** Holybro X500 V2 (Carbon Fiber for rigidity).
+*   **Computational Core:** NVIDIA Jetson Orin Nano (8GB). Handles real-time MPC, VIO, and Zenoh networking.
+*   **Flight Controller:** Holybro Pixhawk 6C (PX4). Handles low-level attitude stabilization.
+*   **Sensors:** 
+    *   **GNSS:** CubePilot Here 4 (Multiband RTK for cm-level precision).
+    *   **Vision:** Luxonis OAK-D Pro or Intel RealSense D435i (Visual Inertial Odometry for GPS-denied environments).
+*   **Power:** Matek BEC 12S-PRO (Regulated power to protect Jetson from motor voltage spikes).
 
-### 3.1 `sar_swarm_control` (Rust)
-The core "brain" of each drone.
-- **Offboard Lifecycle Node:** Implements a manual lifecycle state machine (`on_configure`, `on_activate`, etc.) for robust startup and failover.
-- **State Machine:** Manages mission phases (Idle, Search, Follow, Extract).
-- **Flocking Engine:** Implements Boids algorithms (Separation, Alignment, Cohesion) for autonomous formation maintenance.
-- **Safety Monitor:** 20Hz heartbeat loop ensuring continuous Offboard control mode publication to PX4.
-- **Coordinate Transformation:** Native ENU to NED conversion for PX4-compatible trajectory setpoints.
+### 3.2 Phase 2: Full-Scale Heavy Lift
+*   **Payload Target:** 115kg (Human + stretcher + rigging + safety margin).
+*   **Propulsion:** T-Motor U15 II KV80 (~36kg thrust per motor).
+*   **Configuration:** Octocopter (X8) Coaxial for critical redundancy.
 
-### 3.2 `sar_perception` (Python)
-- **Object Detection:** Identifies human signatures (class "person") using YOLOv8.
-- **Depth Fusion:** Synchronizes RGB and Depth frames to extract 3D coordinates from 2D bounding boxes.
-- **Search Planning:** Generates Boustrophedon (lawnmower) paths for area coverage with configurable overlap and altitude.
-- **Coordinate Transformation:** Projects 2D detections into 3D world coordinates using pinhole camera model and TF2 transformations to the `map` frame.
+## 4. Software Stack
 
-### 3.3 `sar_simulation`
-- **Mock Sim:** Lightweight UDP-based simulation for logic testing.
-- **Gazebo/SITL:** (Planned) High-fidelity physics simulation for propulsion and tether dynamics.
+### 4.1 Framework: ROS 2 Humble
+Utilizes decentralized Peer-to-Peer communication and Lifecycle Management to ensure all safety checks are active before arming.
 
-## 4. Operational Phases
+### 4.2 Core Logic: Rust
+Mandatory for safety-critical control loops. Rust's memory ownership model eliminates memory safety bugs and race conditions without runtime overhead.
+*   **MAVSDK-Rust:** Safe interface for PX4 offboard control.
 
-### Phase 1: Reconnaissance (PoC)
-- **Objective:** Autonomous area coverage and victim localization.
-- **Platform:** Holybro X500 V2.
-- **Outcome:** Centimeter-accurate localization of a manikin in a search sector.
+### 4.3 Communication: Eclipse Zenoh
+Replaces standard DDS for inter-drone communication.
+*   **Discovery Efficiency:** Reduces discovery overhead by up to 99%.
+*   **Reliability:** Optimized for high-performance communication over unreliable wireless links (Mesh Networking).
+*   **Bridging:** `zenoh-bridge-ros2dds` bridges local ROS 2 topics to the global swarm network.
 
-### Phase 2: Heavy-Lift Evacuation
-- **Objective:** Physical transport of a 100kg load (human + stretcher).
-- **Platform:** Custom Octocopter (X8) / Foxtech Gaia 160MP.
-- **Mechanism:** Single heavy-lifter or distributed lift (swarms tethered to one payload) using Admittance Control.
+## 5. Marine SAR Application
 
-## 5. Regulatory Compliance
+*   **Environmental Hardening:** IP67 rating and salt spray corrosion protection.
+*   **Dynamic Recovery:** Heave compensation for landing on pitching ship decks using VIO and AprilTag tracking.
+*   **Search Patterns:** Parallel sweep and creeping line patterns optimized for leeway drift in maritime environments.
 
-### EASA / ULC (Poland)
-- **Category:** Specific (requires Operational Authorization) or Certified.
-- **SORA:** All operations are based on SORA (Specific Operations Risk Assessment).
-- **SAIL Level:** Expected SAIL III/IV for Phase 1, SAIL V/VI for Phase 2.
-- **Safety Systems:** Independent FTS (Flight Termination System) and ballistic parachutes for heavy-lift units.
+## 6. Safety Protocols and Regulatory Compliance (SORA)
+
+The project follows the **Specific Operations Risk Assessment (SORA)** methodology (EASA/ULC).
+*   **Redundancy:** Decentralized swarm logic (no single point of failure), X8 motor configuration, and triple-redundant IMUs.
+*   **Ground/Air Risk Mitigation:** Operations over controlled SAR zones and low-altitude flight (<120m).
+*   **Human-Swarm Interaction:** High-level strategic commands (e.g., "Search Sector A") via React-based GCS or Flutter-based tactical tablets.
