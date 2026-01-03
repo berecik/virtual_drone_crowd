@@ -186,6 +186,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             FlightState::TAKEOFF => {
                 c.publish_trajectory_setpoint(Vector3::new(0.0, 0.0, takeoff_height))?;
+                // Check if we are close to takeoff height
+                // Since we don't have current position here, let's just transition after one setpoint for this PoC
+                // or after some time. For now, let's keep it simple.
+                c.flight_state = FlightState::LOITER;
             }
             FlightState::LOITER => {
                 c.publish_trajectory_setpoint(Vector3::new(0.0, 0.0, takeoff_height))?;

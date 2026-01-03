@@ -12,7 +12,7 @@ pub mod utils;
 pub mod search;
 #[path = "main.rs"]
 pub mod main_module;
-pub use main_module::{LifecycleState, OffboardControlNode};
+pub use main_module::{FlightState, OffboardController};
 
 #[cfg(test)]
 pub mod tests;
