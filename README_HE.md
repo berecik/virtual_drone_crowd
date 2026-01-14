@@ -48,6 +48,7 @@
 ├── README_PL.md            # תיעוד בפולנית
 ├── README_UA.md            # תיעוד באוקראינית
 ├── README_HE.md            # תיעוד בעברית
+├── Business_Analysis.pdf   # ניתוח עסקי וניתוח שוק
 ├── ROADMAP.md              # לוח זמנים של הפרויקט ואבני דרך
 ├── TESTING.md              # נהלים ומדריכי בדיקה
 └── AGENTS.md               # הקשר טכני ומדריך פיתוח
@@ -102,6 +103,9 @@ cargo test
 ## 📖 תיעוד
 
 תיעוד הפרויקט זמין במספר שפות ופורמטים.
+
+### 🎯 ניתוח עסקי
+*   **[ניתוח עסקי (PDF)](Business_Analysis.pdf)** — ניתוח שוק מקיף, הצעת ערך ו-ROI עבור מערכת ה-DAS-SAR.
 
 ### תיעוד ליבה
 *   **[Project Plan](docs/Drone%20Swarm%20Evacuation%20Project%20Plan.md)** ([PL](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_PL.md) / [UA](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_UA.md)) — אסטרטגיה ומפרטי שלב 2.

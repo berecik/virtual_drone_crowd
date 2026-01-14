@@ -48,6 +48,7 @@ System ten został zaprojektowany nie tylko do poszukiwań i rozpoznania, ale do
 ├── README_PL.md            # Dokumentacja w języku polskim
 ├── README_UA.md            # Dokumentacja w języku ukraińskim
 ├── README_HE.md            # Dokumentacja w języku hebrajskim
+├── Business_Analysis.pdf   # Analiza biznesowa i rynkowa
 ├── ROADMAP.md              # Harmonogram projektu i kamienie milowe
 ├── TESTING.md              # Procedury i przewodniki testowe
 └── AGENTS.md               # Kontekst techniczny i przewodnik programisty
@@ -102,6 +103,9 @@ cargo test
 ## 📖 Dokumentacja
 
 Dokumentacja projektu jest dostępna w wielu językach i formatach.
+
+### 🎯 Case Biznesowy
+*   **[Analiza Biznesowa (PDF)](Business_Analysis.pdf)** — Kompleksowa analiza rynku, propozycja wartości i ROI dla systemu DAS-SAR.
 
 ### Główna Dokumentacja
 *   **[Plan Projektu](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_PL.md)** ([EN](docs/Drone%20Swarm%20Evacuation%20Project%20Plan.md) / [UA](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_UA.md)) — Strategia i specyfikacje Fazy 2.
