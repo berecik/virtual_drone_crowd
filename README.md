@@ -1,70 +1,74 @@
-# Virtual Drone Crowd: Distributed Aerial SAR System
+# DAS-SAR: Distributed Aerial Search and Rescue Swarm
 
-[![ROS 2](https://img.shields.io/badge/ROS_2-Humble-blue.svg)](https://docs.ros.org/en/humble/)
+[![ROS 2](https://img.shields.io/badge/ROS_2-Humble%2FJazzy-blue.svg)](https://docs.ros.org/en/humble/)
 [![Language](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
+[![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
+[![Middleware](https://img.shields.io/badge/Middleware-Zenoh-green.svg)](https://zenoh.io/)
 
 ## 📖 Overview
 
-**Virtual Drone Crowd** is a research and development framework focused on the simulation and deployment of **Distributed Lift Systems (DLS)** for Search and Rescue (SAR) operations. The project implements a decentralized swarm architecture where multiple autonomous drones coordinate to lift and transport heavy payloads (e.g., human casualties) via flexible tethers.
+**DAS-SAR** (Distributed Aerial Search and Rescue) represents a paradigm shift from traditional single-point-of-failure aerial evacuation (e.g., helicopters) to a **Fail-Operational Distributed Lift System (DLS)**. Instead of relying on one massive aircraft, we utilize a swarm of autonomous heavy-lift drones tethered to a single payload.
 
-This repository bridges the gap between simulation and reality, providing the source code for swarm control logic (Rust), simulation environments (Gazebo/PX4), and high-performance communication middleware based on **Eclipse Zenoh** and **ROS 2**.
+This system is designed not just for searching and reconnaissance, but for **redundant heavy lifting**. By decoupling lift capacity from individual airframe size, the DAS-SAR swarm can extract human casualties (100kg+ payloads) from environments inaccessible to conventional aircraft, such as dense forests, deep canyons, or urban disaster zones.
 
-### 🇵🇱 Przegląd Projektu (Polish)
-Projekt DAS-SAR ma na celu zrewolucjonizowanie operacji poszukiwawczo-ratowniczych (SAR) poprzez wdrożenie kooperacyjnego roju autonomicznych dronów zdolnych do ewakuacji ciężkich ładunków. Dzięki wykorzystaniu **modelu Boids**, algorytmu **Raft Consensus** oraz sieci **Zenoh**, system zapewnia bezpieczną koordynację i transport osób w trudno dostępnych terenach (góry, morze, miasta).
+---
+
+## 📐 System Visualization
+
+> **[PLACEHOLDER: Diagram showing a 6-agent swarm tethered to a single stretcher payload, illustrating the geometric authority and tether geometry.]**
+
+---
 
 ## 🚀 Key Features
 
-*   **Distributed Admittance Control:** Implements a mass-spring-damper model for each drone, allowing the swarm to stabilize slung loads without rigid position fighting.
-*   **Swarm Intelligence:** Emergent flocking behaviors based on the **Boids Model** (Separation, Alignment, Cohesion) and dynamic area partitioning.
-*   **Consensus & Coordination:** Uses the **Raft Consensus** algorithm for reliable state agreement and leader election across the swarm.
-*   **Mesh Networking (Zenoh):** Utilizes **Eclipse Zenoh** for high-performance, low-latency communication, reducing discovery overhead by 99% in WiFi-congested environments.
-*   **Safety-Critical Core:** Control loops implemented in **Rust** to guarantee memory safety and real-time performance.
-*   **Tactical Interfaces:** Multi-platform interaction via **React GCS** (3D visualization) and **Flutter Tactical Terminals** (mobile field coordination).
-*   **Marine & Terrain SAR:** Specialized support for maritime drift search (heave compensation) and urban canyon evacuation.
+*   **Fail-Operational Distributed Lift:** The swarm survives the total loss of an agent mid-mission without dropping the payload.
+*   **6-Agent Redundancy:** Phase 2 utilizes a minimum of 6 heavy-lift drones (coaxial octocopters). This provides the necessary geometric authority to maintain 6-DOF control even in a failure state.
+*   **Dynamic Agent Replacement:** Supports "Hot-Swap" logic where reserve drones can swap out with depleted or failing agents mid-mission, ensuring continuous 24/7 operation.
+*   **Distributed Admittance Control:** Implements mass-spring-damper models to stabilize slung loads and manage internal tether tension without rigid position fighting.
+*   **Mesh Networking (Zenoh):** Leveraging **Eclipse Zenoh** for ultra-low latency swarm coordination, significantly outperforming standard DDS in congested or wide-area environments.
 
 ## 🏗 Project Structure
 
 ```text
 .
 ├── docker/                 # Zenoh configuration and docker setups
-├── docs/                   # Technical studies and project documentation
+├── docs/                   # Project plans, Technical studies, and SORA analysis
 ├── sar_swarm_ws/           # ROS 2 Workspace
 │   └── src/
+│       ├── heavy_lift_core/# Core swarm lift logic (Rust)
 │       ├── px4_msgs/       # PX4-ROS 2 message definitions
-│       ├── sar_perception/ # AI/Vision nodes (Detection & Localization)
+│       ├── sar_perception/ # AI/Vision nodes (Detection & Localization - Python)
 │       ├── sar_simulation/ # Swarm simulation and test scripts
-│       └── sar_swarm_control/ # Core swarm control logic (Rust)
+│       └── sar_swarm_control/ # Distributed control algorithms (Rust)
 ├── Dockerfile              # Development environment container
 ├── docker-compose.yml      # Multi-container orchestration
 ├── README.md               # This file
-├── SYSTEM_DOCUMENTATION.md # Detailed technical architecture
+├── docs/Technical Architecture.md # Detailed technical architecture
+├── SYSTEM_DOCUMENTATION.md # Project-wide documentation (Legacy)
 └── ROADMAP.md              # Project timeline and milestones
-└── TESTING.md              # Testing procedures
 ```
 
 ## 🛠 Tech Stack
 
 | Component | Technology |
 | :--- | :--- |
-| **Core Framework** | ROS 2 (Humble) |
-| **Swarm Control** | Rust (rclrs / MAVSDK-Rust), Raft Consensus |
-| **Edge AI/Vision** | Python (PyTorch/YOLOv8), Luxonis OAK-D / RealSense |
-| **Middleware** | Eclipse Zenoh (Mesh Networking) |
-| **User Interfaces** | React (GCS), Flutter (Tactical Terminal) |
+| **Safety-Critical Control** | **Rust** (rclrs, MAVSDK-Rust) |
+| **AI & Computer Vision** | **Python** (PyTorch, YOLOv8/11) |
+| **Middleware** | **Eclipse Zenoh** & **ROS 2** (Humble/Jazzy) |
+| **Simulation** | Gazebo Harmonic / PX4 SITL |
 | **Hardware (Ph 1)** | NVIDIA Jetson Orin Nano, Pixhawk 6C, Holybro X500 V2 |
-| **Hardware (Ph 2)** | T-Motor U15 II, Hobbywing X9 Plus, Gaia 160MP |
-| **Optimization** | ACADO/OSQP MPC Solvers |
+| **Hardware (Ph 2)** | T-Motor U15 II / Hobbywing X9 Plus (Coaxial X8) |
 
 ## 🚦 Getting Started
 
 ### Prerequisites
 - Docker & Docker Compose
-- Ubuntu 22.04 LTS (recommended for local development)
-- ROS 2 Humble
+- Ubuntu 22.04 LTS (recommended)
+- ROS 2 Humble/Jazzy
 - Rust Toolchain
 
 ### Running Simulation
-The project includes a Docker-based simulation for testing the Rust-based Boids swarm behavior.
+The project includes a Docker-based simulation for testing the Rust-based swarm behavior.
 
 1. **Build the Docker environment:**
    ```bash
@@ -75,7 +79,6 @@ The project includes a Docker-based simulation for testing the Rust-based Boids 
    ```bash
    docker-compose up
    ```
-   This will start 3 SITL drones and 3 swarm nodes running the Rust Boids algorithm.
 
 3. **Visualize on host:**
    ```bash
@@ -85,7 +88,7 @@ The project includes a Docker-based simulation for testing the Rust-based Boids 
 ## 🧪 Development
 
 ### Running Unit Tests
-To verify the Boids logic:
+To verify the core control logic:
 ```bash
 cd sar_swarm_ws/src/sar_swarm_control
 cargo test
@@ -94,11 +97,10 @@ cargo test
 ## 📖 Documentation
 
 For detailed information, please refer to:
-- [System Documentation (English)](SYSTEM_DOCUMENTATION.md) - Deep dive into architecture and control theory.
-- [Dokumentacja Systemu (Polski)](SYSTEM_DOCUMENTATION_PL.md) - Pełna dokumentacja techniczna i sprzętowa.
-- [Roadmap](ROADMAP.md) - Project timeline and milestones.
-- [Testing](TESTING.md) - Detailed testing instructions.
-- [Original Technical Study (Polish)](docs/Projekt%20Dronów%20SAR_%20Ewakuacja%20Człowieka.md)
+- [Project Plan v2.0](docs/DAS-SAR%20Project%20Plan%20v2.0_%20Distributed%20Heavy-Lift%20Swarm.md) - Strategy and Phase 2 specs.
+- [Technical Architecture](docs/Technical%20Architecture.md) - Deep dive into control theory and system design.
+- [SORA Safety Case](docs/Safety_Case_SORA.md) - Risk analysis for human extraction.
+- [Roadmap](ROADMAP.md) - Development timeline.
 
 ## 👥 Authors & Contact
 
@@ -109,4 +111,4 @@ For detailed information, please refer to:
 ---
 
 ## ⚖️ Legal & Safety
-Operations involving heavy-lift swarms and human transport are subject to EASA Specific/Certified category regulations and require SORA (Specific Operations Risk Assessment). See [System Documentation](SYSTEM_DOCUMENTATION.md#6-safety-protocols-and-regulatory-compliance-sora) for details.
+Operations involving heavy-lift swarms and human transport are subject to EASA Specific/Certified category regulations. All operations must follow the [SORA](docs/Safety_Case_SORA.md) protocols defined in the documentation.

@@ -1,4 +1,7 @@
-# System Documentation: Distributed Aerial SAR System (DAS-SAR)
+# Project Documentation: Distributed Aerial SAR System (DAS-SAR)
+
+> [!NOTE]
+> For the latest technical architecture details, including Phase 2 swarm topology and control allocation, please refer to [docs/Technical Architecture.md](docs/Technical Architecture.md).
 
 **Authors:** beret@hipisi.org.pl & Marysia Software Limited (ceo@marysia.app, https://marysia.app)  
 **Domain:** app.marysia.drone  
