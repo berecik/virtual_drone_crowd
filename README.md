@@ -43,9 +43,12 @@ This system is designed not just for searching and reconnaissance, but for **red
 ├── Dockerfile              # Development environment container
 ├── docker-compose.yml      # Multi-container orchestration
 ├── README.md               # This file
+├── README_PL.md            # Documentation in Polish
+├── README_UA.md            # Documentation in Ukrainian
+├── README_HE.md            # Documentation in Hebrew
 ├── docs/Technical Architecture.md # Detailed technical architecture
-├── SYSTEM_DOCUMENTATION.md # Project-wide documentation (Legacy)
-└── ROADMAP.md              # Project timeline and milestones
+├── ROADMAP.md              # Project timeline and milestones
+└── AGENTS.md               # Technical Context & Development Guide
 ```
 
 ## 🛠 Tech Stack

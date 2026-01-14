@@ -1,5 +1,7 @@
 # Safety Case: Specific Operations Risk Assessment (SORA)
 
+[Languages]: [EN](Safety_Case_SORA.md) | [PL](Safety_Case_SORA_PL.md) | [UA](Safety_Case_SORA_UA.md)
+
 **Role:** Aviation Safety Specialist  
 **Project:** DAS-SAR: Distributed Aerial Search and Rescue Swarm  
 **Version:** 1.0  

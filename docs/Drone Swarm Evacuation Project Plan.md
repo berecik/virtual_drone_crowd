@@ -1,5 +1,7 @@
 # **Strategic Implementation Plan for Distributed Aerial Search and Rescue Systems: From Prototype to Heavy-Lift Human Evacuation**
 
+[Languages]: [EN](Drone%20Swarm%20Evacuation%20Project%20Plan.md) | [PL](Drone%20Swarm%20Evacuation%20Project%20Plan_PL.md) | [UA](Drone%20Swarm%20Evacuation%20Project%20Plan_UA.md)
+
 ## **1\. Introduction and Operational Context**
 
 The domain of Search and Rescue (SAR) is currently undergoing a paradigm shift, driven by the rapid miniaturisation of avionics and the maturation of autonomous control strategies. Traditional aerial evacuation relies almost exclusively on human-crewed rotary-wing aircraft—helicopters—which are capital-intensive, operationally expensive, and severely constrained by terrain and weather. While small Unmanned Aerial Vehicles (UAVs) have been successfully integrated for reconnaissance and thermal detection, the capability to extract a casualty physically remains a logistical gap. A single heavy-lift drone capable of carrying a human (80 kg+) requires a massive airframe (300 kg+ MTOM), presenting transportability issues similar to those of human-crewed aircraft.

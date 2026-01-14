@@ -86,7 +86,7 @@ When an agent receives the "do maintenance" command, it must follow this iterati
         -   **Format:** Start each task line with the status checkbox (e.g., `- [x] Task description`) or update the `Status` column in tables.
         -   **Test Coverage:** Update the `(Test Coverage: X%)` next to Phase headers. Calculate this as the percentage of tasks within that phase marked as `(cover by tests)`.
         -   **Subtask Coverage:** For complex tasks with multiple subtasks, describe the specific coverage for each subtask if it is possible and makes sense (e.g., `- [x] (cover by tests) **Task Name**: Description (Coverage: Unit tests for X and Y)`).
-    -   **Project Docs:** Update `README.md` and `SYSTEM_DOCUMENTATION.md` to keep them synchronized with the codebase.
+    -   **Project Docs:** Update `README.md` and ensure translations are synchronized to keep them synchronized with the codebase.
 5.  **Log Maintenance:** Record the date and summary of changes in the project's history or a dedicated `MAINTENANCE.log`.
 
 ### 2. Testing Task ("do tests")
@@ -104,7 +104,7 @@ When an agent receives the "do tests" command, it must prioritize coverage and r
 3.  **Update Documentation:**
     -   **TESTING.md:** Update the global test status and provide a **detailed explanation** for all tests (Purpose, Input, Expected Outcome).
     -   **Module Testing Docs:** Update specific files like `sar_swarm_ws/src/sar_swarm_control/TESTING.md` with detailed test descriptions.
-    -   **Project Docs:** Ensure `SYSTEM_DOCUMENTATION.md` reflects any changes in system behavior discovered during testing.
+    -   **Project Docs:** Ensure documentation reflects any changes in system behavior discovered during testing.
 
 *Last Maintenance: 2026-01-14 21:15 - Updated Roadmap to reflect Phase 1 completion and Phase 2 "Active Development" status. Synchronized with SORA Safety Case (6-agent requirement) and Technical Architecture (DLS/Admittance Control).*
 
@@ -134,7 +134,8 @@ If you are tasked with moving the project forward, prioritize:
 ## 📝 Coding Standards
 -   **Rust:** Follow `clippy` and `rustfmt`. Use `Arc<Mutex<T>>` for shared state in ROS 2 nodes.
 -   **Python:** PEP 8 compliance. Use type hints.
--   **Documentation:** All new modules must be added to the relevant `README.md` and referenced in `SYSTEM_DOCUMENTATION.md`.
+-   **Documentation:** All new modules must be added to the relevant `README.md` and referenced in the main documentation.
+-   **Languages:** Maintain translations in `README_PL.md`, `README_UA.md`, `README_HE.md`, etc.
 
 ---
 *Generated for the Virtual Drone Crowd Project. Use this context to maintain architectural integrity.*

@@ -1,5 +1,7 @@
 # Technical Architecture: Distributed Aerial Search and Rescue (DAS-SAR)
 
+[Languages]: [EN](Technical%20Architecture.md) | [PL](Technical%20Architecture_PL.md) | [UA](Technical%20Architecture_UA.md)
+
 ## 1. System Overview
 The DAS-SAR system utilizes a **Distributed Lift System (DLS)** to transport heavy payloads, such as human casualties, using a swarm of coordinated drones. This architecture decouples total lift capacity from the size of individual agents, enabling the use of man-portable drones for heavy-lift missions.
 

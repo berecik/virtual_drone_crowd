@@ -1,5 +1,7 @@
 # **PROJEKT SYSTEMU AUTONOMICZNEGO ROJU DRONÓW SAR DO EWAKUACJI OSÓB: STUDIUM TECHNICZNE, ARCHITEKTURA I PLAN WDROŻENIA**
 
+[Języki]: [EN](Drone%20Swarm%20Evacuation%20Project%20Plan.md) | [PL](Drone%20Swarm%20Evacuation%20Project%20Plan_PL.md) | [UA](Drone%20Swarm%20Evacuation%20Project%20Plan_UA.md)
+
 ## **1\. Wstęp i Kontekst Operacyjny Nowoczesnych Systemów Ratowniczych**
 
 Współczesne operacje poszukiwawczo-ratownicze (SAR – Search and Rescue) stoją w obliczu rosnących wymagań dotyczących szybkości reakcji, precyzji działania oraz minimalizacji ryzyka dla personelu ratowniczego. Tradycyjne metody, opierające się na pieszych zespołach przeszukujących teren, psach tropiących oraz załogowym lotnictwie śmigłowcowym, choć wciąż niezastąpione w wielu aspektach, napotykają na bariery wynikające z fizjologii człowieka, warunków atmosferycznych oraz kosztów operacyjnych.1 Wprowadzenie bezzałogowych statków powietrznych (UAV) do arsenału służb ratowniczych stanowiło pierwszy krok w kierunku cyfryzacji pola walki o życie, jednakże model „jeden pilot – jeden dron” szybko okazał się niewystarczający w obliczu rozległych obszarów poszukiwań i złożoności zadań ewakuacyjnych.2

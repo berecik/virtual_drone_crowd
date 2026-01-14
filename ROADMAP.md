@@ -62,3 +62,5 @@
 ### 8. Regulatory Approval
 - [ ] **SORA Finalization:** Finalize Specific Operations Risk Assessment for ULC/EASA.
 - [ ] **Certified Testing:** Perform flight tests with dummy loads and parachute system validation.
+
+---

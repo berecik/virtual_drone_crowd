@@ -80,6 +80,8 @@ The following tests verify the AI-driven human detection and 3D localization log
 
 - [sar_swarm_control Testing Guide](sar_swarm_ws/src/sar_swarm_control/TESTING.md)
 
+---
+
 ## 🛠 Testing Protocol
 
 Autonomous agents and developers must follow the protocol defined in [AGENTS.md](AGENTS.md#2-testing-task-do-tests).
