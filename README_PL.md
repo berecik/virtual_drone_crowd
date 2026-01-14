@@ -1,5 +1,7 @@
 # DAS-SAR: Rozproszony Lotniczy System Poszukiwawczo-Ratowniczy (Rój)
 
+🌍 **[English](README.md)** | 🇵🇱 **[Polski]** | 🇺🇦 **[Українська](README_UA.md)** | 🇮🇱 **[עברית](README_HE.md)**
+
 [![ROS 2](https://img.shields.io/badge/ROS_2-Humble%2FJazzy-blue.svg)](https://docs.ros.org/en/humble/)
 [![Language](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
 [![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
@@ -46,8 +48,8 @@ System ten został zaprojektowany nie tylko do poszukiwań i rozpoznania, ale do
 ├── README_PL.md            # Dokumentacja w języku polskim
 ├── README_UA.md            # Dokumentacja w języku ukraińskim
 ├── README_HE.md            # Dokumentacja w języku hebrajskim
-├── docs/Technical Architecture.md # Szczegółowa architektura techniczna
 ├── ROADMAP.md              # Harmonogram projektu i kamienie milowe
+├── TESTING.md              # Procedury i przewodniki testowe
 └── AGENTS.md               # Kontekst techniczny i przewodnik programisty
 ```
 
@@ -99,11 +101,19 @@ cargo test
 
 ## 📖 Dokumentacja
 
-Szczegółowe informacje znajdują się w:
-- [Plan Projektu v2.0](docs/DAS-SAR%20Project%20Plan%20v2.0_%20Distributed%20Heavy-Lift%20Swarm.md) - Strategia i specyfikacje Fazy 2.
-- [Architektura Techniczna](docs/Technical%20Architecture.md) - Szczegółowe omówienie teorii sterowania i projektowania systemu.
-- [Analiza Bezpieczeństwa SORA](docs/Safety_Case_SORA.md) - Analiza ryzyka dla ewakuacji ludzi.
-- [Roadmap](ROADMAP.md) - Harmonogram rozwoju.
+Dokumentacja projektu jest dostępna w wielu językach i formatach.
+
+### Główna Dokumentacja
+*   **[Plan Projektu](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_PL.md)** ([EN](docs/Drone%20Swarm%20Evacuation%20Project%20Plan.md) / [UA](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_UA.md)) — Strategia i specyfikacje Fazy 2.
+*   **[Architektura Techniczna](docs/Technical%20Architecture_PL.md)** ([EN](docs/Technical%20Architecture.md) / [UA](docs/Technical%20Architecture_UA.md)) — Szczegółowe omówienie teorii sterowania i projektowania systemu.
+*   **[Analiza Bezpieczeństwa SORA](docs/Safety_Case_SORA_PL.md)** ([EN](docs/Safety_Case_SORA.md) / [UA](docs/Safety_Case_SORA_UA.md)) — Analiza ryzyka dla ewakuacji ludzi.
+*   **[Roadmap](ROADMAP.md)** — Harmonogram projektu i kamienie milowe.
+*   **[Przewodnik po Testach](TESTING.md)** — Procedury walidacji zachowania roju.
+*   **[Przewodnik Programisty](AGENTS.md)** — Kontekst techniczny dla deweloperów.
+
+### Prace Techniczne (PDF)
+*   [Drone Development Without Drones](docs/Drone%20Development%20Without%20Drones.pdf) (EN)
+*   [Zaawansowane Środowiska Symulacyjne dla Autonomicznych Rojów Robotów](docs/Zaawansowane%20Środowiska%20Symulacyjne%20dla%20Autonomicznych%20Rojów%20Robotów.pdf) (PL)
 
 ## 👥 Autorzy i Kontakt
 

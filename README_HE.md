@@ -1,5 +1,7 @@
 # DAS-SAR: נחיל חיפוש והצלה אווירי מבוזר
 
+🌍 **[English](README.md)** | 🇵🇱 **[Polski](README_PL.md)** | 🇺🇦 **[Українська](README_UA.md)** | 🇮🇱 **[עברית]**
+
 [![ROS 2](https://img.shields.io/badge/ROS_2-Humble%2FJazzy-blue.svg)](https://docs.ros.org/en/humble/)
 [![Language](https://img.shields.io/badge/Language-Rust-orange.svg)](https://www.rust-lang.org/)
 [![Language](https://img.shields.io/badge/Language-Python-blue.svg)](https://www.python.org/)
@@ -46,8 +48,8 @@
 ├── README_PL.md            # תיעוד בפולנית
 ├── README_UA.md            # תיעוד באוקראינית
 ├── README_HE.md            # תיעוד בעברית
-├── docs/Technical Architecture.md # ארכיטקטורה טכנית מפורטת
 ├── ROADMAP.md              # לוח זמנים של הפרויקט ואבני דרך
+├── TESTING.md              # נהלים ומדריכי בדיקה
 └── AGENTS.md               # הקשר טכני ומדריך פיתוח
 ```
 
@@ -99,11 +101,19 @@ cargo test
 
 ## 📖 תיעוד
 
-למידע מפורט, אנא עיינו ב:
-- [Project Plan v2.0](docs/DAS-SAR%20Project%20Plan%20v2.0_%20Distributed%20Heavy-Lift%20Swarm.md) - אסטרטגיה ומפרטי שלב 2.
-- [Technical Architecture](docs/Technical%20Architecture.md) - צלילה עמוקה לתורת הבקרה ותכנון המערכת.
-- [SORA Safety Case](docs/Safety_Case_SORA.md) - ניתוח סיכונים לחילוץ אנושי.
-- [Roadmap](ROADMAP.md) - לוח זמנים לפיתוח.
+תיעוד הפרויקט זמין במספר שפות ופורמטים.
+
+### תיעוד ליבה
+*   **[Project Plan](docs/Drone%20Swarm%20Evacuation%20Project%20Plan.md)** ([PL](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_PL.md) / [UA](docs/Drone%20Swarm%20Evacuation%20Project%20Plan_UA.md)) — אסטרטגיה ומפרטי שלב 2.
+*   **[Technical Architecture](docs/Technical%20Architecture.md)** ([PL](docs/Technical%20Architecture_PL.md) / [UA](docs/Technical%20Architecture_UA.md)) — צלילה עמוקה לתורת הבקרה ותכנון המערכת.
+*   **[SORA Safety Case](docs/Safety_Case_SORA.md)** ([PL](docs/Safety_Case_SORA_PL.md) / [UA](docs/Safety_Case_SORA_UA.md)) — ניתוח סיכונים לחילוץ אנושי.
+*   **[Roadmap](ROADMAP.md)** — לוח זמנים של הפרויקט ואבני דרך.
+*   **[Testing Guide](TESTING.md)** — נהלים לאימות התנהגות הנחיל.
+*   **[Agent Development Guide](AGENTS.md)** — הקשר טכני למפתחים.
+
+### מאמרים טכניים (PDF)
+*   [Drone Development Without Drones](docs/Drone%20Development%20Without%20Drones.pdf) (EN)
+*   [Zaawansowane Środowiska Symulacyjne dla Autonomicznych Rojów Robotów](docs/Zaawansowane%20Środowiska%20Symulacyjne%20dla%20Autonomicznych%20Rojów%20Robotów.pdf) (PL)
 
 ## 👥 מחברים ויצירת קשר
 
