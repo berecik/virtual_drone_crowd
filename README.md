@@ -17,7 +17,7 @@ This system is designed not just for searching and reconnaissance, but for **red
 
 ## 📐 System Visualization
 
-> **[PLACEHOLDER: Diagram showing a 6-agent swarm tethered to a single stretcher payload, illustrating the geometric authority and tether geometry.]**
+![System Visualization](docs/system_visualisation.png)
 
 ---
 

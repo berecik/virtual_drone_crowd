@@ -17,7 +17,7 @@ System ten został zaprojektowany nie tylko do poszukiwań i rozpoznania, ale do
 
 ## 📐 Wizualizacja Systemu
 
-> **[MIEJSCE NA DIAGRAM: Schemat pokazujący rój 6 agentów połączonych z noszami, ilustrujący geometrię lin i kontrolę nad ładunkiem.]**
+![Wizualizacja Systemu](docs/system_visualisation.png)
 
 ---
 
