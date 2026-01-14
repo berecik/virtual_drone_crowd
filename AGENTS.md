@@ -14,11 +14,11 @@ This document provides a comprehensive technical overview and context for autono
 ---
 
 ## 🚁 Project Essence
-**Virtual Drone Crowd** is a dual-phase Search and Rescue (SAR) system:
-1.  **Phase 1 (Scout Swarm):** Agile, man-portable drones for autonomous area search and human detection.
-2.  **Phase 2 (Heavy Lift):** Large-scale platforms for physical human evacuation using distributed or centralized lift.
+**Virtual Drone Crowd** (DAS-SAR) is a dual-phase Search and Rescue (SAR) system:
+1.  **Phase 1 (Scout Swarm):** Agile, man-portable drones (Holybro X500 V2) for autonomous area search and human detection.
+2.  **Phase 2 (Heavy Lift):** A **Distributed Lift System (DLS)** using a minimum of **6 heavy-lift agents** (coaxial X8) to evacuate human casualties (100kg+ payload).
 
-**Core Philosophy:** Decentralization, Determinism (via Rust), and Communication Efficiency (via Zenoh).
+**Core Philosophy:** Decentralization, Determinism (via Rust), and Fail-Operational Redundancy (6 agents for 6-DOF payload control).
 
 ---
 
@@ -27,36 +27,41 @@ This document provides a comprehensive technical overview and context for autono
 ### 1. The Autonomous Agent (Individual Drone)
 Each drone is an independent ROS 2 entity.
 -   **Low-Level (Firmware):** PX4 Autopilot on Pixhawk 6C/X. Handles real-time stabilization.
--   **High-Level (Compute):** NVIDIA Jetson Orin. Runs the ROS 2 workspace.
+-   **High-Level (Compute):** NVIDIA Jetson Orin Nano/AGX. Runs the ROS 2 workspace.
 -   **Middleware:** `zenoh-bridge-ros2dds` bridges local ROS 2 topics to the global swarm mesh.
 
 ### 2. Software Stack & Language Choice
--   **Rust (`rclrs`):** Used for `sar_swarm_control`. **Why?** Memory safety, zero-cost abstractions, and predictable performance without GC pauses. Essential for safety-critical swarm coordination and flight logic.
--   **Python (`rclpy`):** Used for `sar_perception`. **Why?** Deep learning ecosystem (PyTorch, TensorRT, YOLOv8). AI model inference is the primary use case.
--   **Zenoh:** Used for Inter-Drone (swarm) and Ground-to-Swarm comms. **Why?** Outperforms DDS in lossy wireless environments; avoids "discovery storms."
+-   **Rust (`rclrs`):** Used for `sar_swarm_control` and `heavy_lift_core`. **Why?** Memory safety, zero-cost abstractions, and predictable performance. Essential for safety-critical coordination and the Distributed Control Allocation (DCA) layer.
+-   **Python (`rclpy`):** Used for `sar_perception` and `sar_simulation`. **Why?** AI ecosystem (PyTorch, YOLOv8/11).
+-   **Zenoh:** Used for Inter-Drone (swarm) and Ground-to-Swarm comms. **Why?** Low-latency mesh networking; avoids DDS discovery overhead in wireless environments.
 
 ---
 
 ## 🛠 Repository & Workspace Structure
 
--   `/sar_swarm_ws/src/sar_swarm_control`: The Rust core. Look here for FSM, formation logic, and PX4 setpoint publishing.
--   `/sar_swarm_ws/src/sar_perception`: Python nodes for vision. Look here for detection-to-3D coordinate projection.
+-   `/sar_swarm_ws/src/sar_swarm_control`: The Rust swarm logic (Boids, FSM, formation).
+-   `/sar_swarm_ws/src/heavy_lift_core`: Phase 2 core logic (DCA, Admittance Control, 6-agent redundancy).
+-   `/sar_swarm_ws/src/sar_perception`: Python nodes for vision and 3D localization.
 -   `/sar_swarm_ws/src/sar_simulation`: Mock simulators and test runners.
--   `/docker`: Infrastructure configurations.
+-   `/docs`: SORA analysis, Technical Architecture, and Project Plans.
 
 ---
 
 ## 🧩 Key Integration Points (How to Develop)
 
 ### Adding a New Swarm Behavior
-1.  **Modify `sar_swarm_control` (Rust):** Implement the logic in a new module or within the main loop.
-2.  **State Machine:** Add new states to the FSM (e.g., `APPROACH_TARGET`, `WAIT_FOR_EXTRACTION`).
-3.  **PX4 Interface:** Use `px4_msgs::msg::TrajectorySetpoint` to command the drone. Ensure `position` and `yaw` are set correctly.
+1.  **Modify `sar_swarm_control` (Rust):** Implement the logic in a new module.
+2.  **State Machine:** Add new states to the FSM (e.g., `APPROACH_TARGET`).
+3.  **PX4 Interface:** Use `px4_msgs::msg::TrajectorySetpoint` (ENU -> NED conversion required).
+
+### Phase 2: Distributed Lift System (DLS)
+-   **6-Agent Minimum:** Phase 2 operations **require** 6 agents to maintain 6-DOF control of the slung payload.
+-   **Admittance Control:** Drones must "admit" tether forces to prevent rigid position fighting.
+-   **Emergency Detach:** Safety logic must handle immediate tether release in case of critical failure.
 
 ### Inter-Drone Communication
--   Do **not** use standard ROS 2 discovery over WiFi for large swarms.
--   **Mechanism:** Publish to a local ROS 2 topic. Ensure it is added to the `zenoh-bridge` allow-list. Other drones will "see" this topic as if it were local.
--   **Data types:** Prefer `VehicleOdometry` or custom lightweight messages. Avoid sending raw sensor streams (LIDAR/Video) over the mesh unless requested.
+-   **Mechanism:** Publish to a local ROS 2 topic mapped to Zenoh.
+-   **Data types:** `VehicleOdometry` or custom lightweight messages. Avoid raw video/LIDAR over the mesh.
 
 ### AI Detection Pipeline
 -   Detections must be transformed from Image Coordinates -> Camera Coordinates (using Depth Map) -> Drone Body Frame -> World Frame (using Odometry).
@@ -101,7 +106,7 @@ When an agent receives the "do tests" command, it must prioritize coverage and r
     -   **Module Testing Docs:** Update specific files like `sar_swarm_ws/src/sar_swarm_control/TESTING.md` with detailed test descriptions.
     -   **Project Docs:** Ensure `SYSTEM_DOCUMENTATION.md` reflects any changes in system behavior discovered during testing.
 
-*Last Maintenance: 2026-01-02 14:35 - Completed second "do maintenance" cycle; 17 tests verified (13 Rust Swarm, 1 Rust Heavy Lift, 3 Python Perception). Fixed Zenoh API usage in standalone tests and refined Python mocking.*
+*Last Maintenance: 2026-01-14 21:15 - Updated Roadmap to reflect Phase 1 completion and Phase 2 "Active Development" status. Synchronized with SORA Safety Case (6-agent requirement) and Technical Architecture (DLS/Admittance Control).*
 
 ### 3. Simulation First
 Always validate logic in simulation.

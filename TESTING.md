@@ -2,13 +2,14 @@
 
 This document tracks the high-level testing status and provides detailed explanations of the verification suite across the Virtual Drone Crowd project.
 
-## 🧪 Current Status (2026-01-03)
+## 🧪 Current Status (2026-01-14)
 
 | Module | Unit Tests | Integration Tests | SITL / Hardware | Status |
 | :--- | :---: | :---: | :---: | :--- |
-| `sar_swarm_control` (Rust) | ✅ Pass (17)* | ⏳ Pending | ⏳ Pending | Lifecycle & ENU/NED Verified. |
-| `sar_perception` (Python) | ✅ Pass (13) | ⏳ Pending | ⏳ Pending | Robust Mocks for Standalone Execution |
-| `heavy_lift_core` (Rust) | ✅ Pass (1) | ⏳ Pending | ⏳ Pending | Logic Verified via Standalone Script |
+| `sar_swarm_control` (Rust) | ✅ Pass (17)* | ⏳ Pending | ✅ Pass (Sim) | Boids & Mission FSM Verified. |
+| `sar_perception` (Python) | ✅ Pass (13) | ⏳ Pending | ✅ Pass (Sim) | 3D Localization & Lawnmower Verified |
+| `heavy_lift_core` (Rust) | ✅ Pass (1) | ⏳ Pending | ⏳ Pending | Extraction State Machine Verified |
+| **Swarm Simulation** | - | ✅ Pass (3) | ✅ Pass (Sim) | Mock Drone Flight Logic Verified |
 
 \* *Note: Rust tests for `sar_swarm_control` require a sourced ROS 2 environment for compilation due to `rclrs` dependency.*
 
@@ -69,6 +70,11 @@ The following tests verify the AI-driven human detection and 3D localization log
 - **`test_state_transitions`**:
     - **Purpose**: Verifies the extraction sequence state machine (IDLE -> EN_ROUTE -> DESCENDING -> LIFTING -> RETURN -> IDLE).
     - **Verification**: Validates correctness of the `transition()` function and `next_state()` logic.
+
+### 4. `sar_simulation` (Python Swarm Sim)
+- **`test_swarm_flight`**:
+    - **Purpose**: Validates the end-to-end swarm flight logic in the mock simulator.
+    - **Verification**: Ensures drones reach targets and maintain boid constraints.
 
 ## 📂 Detailed Documentation
 
